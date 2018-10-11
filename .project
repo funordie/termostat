@@ -62,9 +62,19 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/ArduinoJson/5.13.3</locationURI>
 		</link>
 		<link>
+			<name>libraries/DNSServer</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/DNSServer</locationURI>
+		</link>
+		<link>
 			<name>libraries/DallasTemperature</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/DallasTemperature/3.8.0</locationURI>
+		</link>
+		<link>
+			<name>libraries/ESP8266WebServer</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/ESP8266WebServer</locationURI>
 		</link>
 		<link>
 			<name>libraries/ESP8266WiFi</name>
@@ -85,6 +95,11 @@
 			<name>libraries/PubSubClient</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/PubSubClient/2.6.0</locationURI>
+		</link>
+		<link>
+			<name>libraries/WiFiManager</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/WiFiManager/0.14.0</locationURI>
 		</link>
 		<link>
 			<name>libraries/Wire</name>

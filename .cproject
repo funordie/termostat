@@ -62,6 +62,12 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DallasTemperature}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/PubSubClient/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/WiFiManager}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -96,6 +102,12 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DallasTemperature}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/PubSubClient/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/WiFiManager}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -130,6 +142,12 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DallasTemperature}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/PubSubClient/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/WiFiManager}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -151,7 +169,7 @@
                     					
                     <sourceEntries>
                         						
-                        <entry excluding="libraries/ArduinoJson/.github|libraries/OneWire/util|libraries/ArduinoJson/fuzzing|libraries/Chrono/docs|libraries/ArduinoJson/include|libraries/ArduinoJson/scripts|libraries/ESP8266_and_ESP32_Oled_Driver_for_SSD1306_display/resources|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries/**/._*|libraries/?*/utility/*/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+                        <entry excluding="libraries/WiFiManager/travis|libraries/ArduinoJson/.github|libraries/OneWire/util|libraries/ArduinoJson/fuzzing|libraries/Chrono/docs|libraries/ArduinoJson/include|libraries/ArduinoJson/scripts|libraries/ESP8266_and_ESP32_Oled_Driver_for_SSD1306_display/resources|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries/**/._*|libraries/?*/utility/*/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
                         					
                     </sourceEntries>
                     				

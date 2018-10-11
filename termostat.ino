@@ -13,13 +13,13 @@ void setup()
     oled_setup();
 }
 
+static float temperature_setpoint;
 // The loop function is called in an endless loop
 void loop()
 {
+	int res;
     static int count = 0;
-    char buff[80];
-    sprintf(buff, "loop: start %d", count);
-    Serial.println(buff);
+    printf("loop: start %d\n", count);
 
     delay(60*1000);
 
@@ -27,9 +27,29 @@ void loop()
     mqtt_loop();
     oled_loop();
 
-    temperature_get_temp(&temp);
-    mqtt_publish_temperature(temp);
-    sprintf(buff, "loop: return %d", count);
-    Serial.println(buff);
+    res = temperature_get_temp(&temp);
+    if(res) {
+    	printf("read temperature error!!!!\n");
+    	return;
+    }
+    else {
+    	printf("process temperature: %f\n", temp);
+    }
+
+    res = mqtt_publish_temperature(temp);
+    if(res) {
+    	printf("sent temperature error!!!!\n");
+    }
+
+    res = mqtt_get_setpoint(&temperature_setpoint);
+    if(res) {
+    	printf("get setpoint error\n");
+    	return;
+    }
+    else {
+    	printf("process setpoint: %f\n", temperature_setpoint);
+    }
+
+    printf("loop: return %d\n", count);
     count ++;
 }

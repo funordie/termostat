@@ -28,7 +28,7 @@
   - Open the "Tools -> Board -> Board Manager" and click install for the ESP8266"
   - Select your ESP8266 in "Tools -> Board"
 
-*/
+ */
 
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
@@ -39,10 +39,12 @@ void setup_wifi();
 void callback(char* topic, byte* payload, unsigned int length);
 
 // Update these with values suitable for your network.
-
 const char* ssid = "xxxx";
 const char* password = "xxxxx";
 const char* mqtt_server = "192.168.1.77";
+
+static int mqtt_setpoint;
+
 
 #define JSON_TEMPERATURE_INDEX 1
 #define JSON_TEMPERATURE_INDEX_SP 99
@@ -54,107 +56,113 @@ long lastMsg = 0;
 StaticJsonBuffer<300> JSONbuffer;
 
 void mqtt_setup() {
-  setup_wifi();
+	printf("%s:%d\n",__FUNCTION__, __LINE__);
+	setup_wifi();
 
-  client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);
+	client.setServer(mqtt_server, 1883);
+	client.setCallback(callback);
 }
 
 void setup_wifi() {
 
-  delay(10);
-  // We start by connecting to a WiFi network
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+	delay(10);
+	// We start by connecting to a WiFi network
+	printf("Connecting to %s\n", ssid);
 
-  WiFi.begin(ssid, password);
+	WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
+	while (WiFi.status() != WL_CONNECTED) {
+		delay(500);
+		printf(".");
+	}
 
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
+	printf("WiFi connected\n  IP address: %s\n", WiFi.localIP().toString().c_str());
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  printf("Message arrived [%s]", topic);
+	printf("Message arrived [%s]", topic);
 
-  printf("Message payload:[");
-  for (unsigned int i = 0; i < length; i++) {
-    printf("%c", payload[i]);
-  }
-  printf("]\n");
+	printf("Message payload:[");
+	for (unsigned int i = 0; i < length; i++) {
+		printf("%c", payload[i]);
+	}
+	printf("]\n");
 
-  //desearize JSON buffer
-  JsonObject & obj = JSONbuffer.parseObject(payload);
-  if(!obj.success())
-  {
-	  printf("%s:%d: parse error !!!!!!\n", __FUNCTION__, __LINE__);
-	  return;
-  }
-  int idx = obj["idx"];
-  int nvalue = obj["nvalue"];
-  int svalue = obj["svalue"];
+	//desearize JSON buffer
+	JsonObject & obj = JSONbuffer.parseObject(payload);
+	if(!obj.success())
+	{
+		printf("%s:%d: parse error !!!!!!\n", __FUNCTION__, __LINE__);
+		return;
+	}
+	int idx = obj["idx"];
+	int nvalue = obj["nvalue"];
+	int svalue = obj["svalue"];
 
-  //TODO: process JSON data
-  switch(idx) {
-  case JSON_TEMPERATURE_INDEX_SP: {
-	  printf("%s:%d: receive Temperature Set point: %d -> %d\n", __FUNCTION__, __LINE__, svalue , nvalue);
-	  break;
-  }
-  default:
-	  printf("%s:%d: Unknown index\n", __FUNCTION__, __LINE__);
-	  return;
-  };
+	//TODO: process JSON data
+	switch(idx) {
+	case JSON_TEMPERATURE_INDEX_SP: {
+		printf("%s:%d: receive Temperature Set point: %d -> %d\n", __FUNCTION__, __LINE__, svalue , nvalue);
+		break;
+	}
+	default:
+		printf("%s:%d: Unknown index\n", __FUNCTION__, __LINE__);
+		return;
+	};
 }
 
 static void reconnect() {
-  // Loop until we're reconnected
-  while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    // Attempt to connect
-    if (client.connect("ESP8266Client")) {
-      Serial.println("connected");
-      // Once connected, publish an announcement...
-      client.publish("outTopic", "hello world");
-      // ... and resubscribe
-      client.subscribe("inTopic");
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
-    }
-  }
+	// Loop until we're reconnected
+	while (!client.connected()) {
+		printf("Attempting MQTT connection...\n");
+		// Attempt to connect
+		if (client.connect("ESP8266Client")) {
+			printf("connected\n");
+			// Once connected, publish an announcement...
+			client.publish("outTopic", "hello world");
+			// ... and resubscribe
+			client.subscribe("inTopic");
+		} else {
+			printf("failed, rc=%d try again in 5 seconds\n", client.state());
+			// Wait 5 seconds before retrying
+			delay(5000);
+		}
+	}
 }
 void mqtt_loop() {
 
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
+	printf("%s:%d\n",__FUNCTION__, __LINE__);
+	if (!client.connected()) {
+		reconnect();
+	}
+	client.loop();
 
-  long now = millis();
-  if (now - lastMsg > 2000) {
-    lastMsg = now;
-    //TODO: alive message
-  }
+	long now = millis();
+	if (now - lastMsg > 2000) {
+		lastMsg = now;
+		//TODO: alive message
+	}
 }
 
-void mqtt_publish_temperature(float temperature) {
+int mqtt_publish_temperature(float temperature) {
 
 	JsonObject & obj = JSONbuffer.createObject();
 	obj["idx"] = JSON_TEMPERATURE_INDEX;
 	obj["nvalue"] = temperature;
 	obj["svalue"] = 0;
-    //JSONencoder["HUM"] = h;
-    char JSONmessageBuffer[100];
-    obj.printTo(JSONmessageBuffer, sizeof(JSONmessageBuffer));
-    client.publish("domoticz/in",JSONmessageBuffer,false);
+	//JSONencoder["HUM"] = h;
+	char JSONmessageBuffer[100];
+	obj.printTo(JSONmessageBuffer, sizeof(JSONmessageBuffer));
+	client.publish("domoticz/in",JSONmessageBuffer,false);
+
+	//TODO: check for error
+	return 0;
+}
+
+int mqtt_get_setpoint(float * setpoint) {
+
+	*setpoint = mqtt_setpoint;
+
+	//TODO: check for error
+	return 0;
 }

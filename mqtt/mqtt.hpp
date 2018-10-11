@@ -11,6 +11,7 @@
 
 void mqtt_loop();
 void mqtt_setup();
-void mqtt_publish_temperature(float temperature);
+int mqtt_publish_temperature(float temperature);
+int mqtt_get_setpoint(float * setpoint);
 
 #endif /* MQTT_MQTT_HPP_ */
