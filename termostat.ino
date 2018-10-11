@@ -1,3 +1,4 @@
+#include <gpio_define.hpp>
 #include <mqtt.hpp>
 #include <temperature.hpp>
 #include <oled.hpp>

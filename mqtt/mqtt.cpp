@@ -29,22 +29,21 @@
   - Select your ESP8266 in "Tools -> Board"
 
  */
-
+#include <WiFiManager.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
 #include <ArduinoJson.h>
 
+#include <gpio_define.hpp>
+
 void setup_wifi();
 void callback(char* topic, byte* payload, unsigned int length);
 
 // Update these with values suitable for your network.
-const char* ssid = "xxxx";
-const char* password = "xxxxx";
 const char* mqtt_server = "192.168.1.77";
 
 static int mqtt_setpoint;
-
 
 #define JSON_TEMPERATURE_INDEX 1
 #define JSON_TEMPERATURE_INDEX_SP 99
@@ -61,21 +60,49 @@ void mqtt_setup() {
 
 	client.setServer(mqtt_server, 1883);
 	client.setCallback(callback);
+
+	pinMode(TRIGGER_PIN, INPUT);
 }
 
 void setup_wifi() {
 
-	delay(10);
-	// We start by connecting to a WiFi network
-	printf("Connecting to %s\n", ssid);
+	//WiFiManager
+	//Local intialization. Once its business is done, there is no need to keep it around
+	WiFiManager wifiManager;
 
-	WiFi.begin(ssid, password);
+	if ( digitalRead(TRIGGER_PIN) == LOW ) {
 
-	while (WiFi.status() != WL_CONNECTED) {
-		delay(500);
-		printf(".");
+		//reset settings - for testing
+		//wifiManager.resetSettings();
+
+		//sets timeout until configuration portal gets turned off
+		//useful to make it all retry or go to sleep
+		//in seconds
+		wifiManager.setTimeout(5*60); //5 minute timeout
+
+		//WITHOUT THIS THE AP DOES NOT SEEM TO WORK PROPERLY WITH SDK 1.5 , update to at least 1.5.1
+		//WiFi.mode(WIFI_STA);
+
+		if (!wifiManager.startConfigPortal("IP_AP", "IP_AP_PASS")) {
+			Serial.println("failed to connect and hit timeout");
+			delay(3000);
+			//reset and try again, or maybe put it to deep sleep
+			ESP.reset();
+			delay(5000);
+		}
+
+		//if you get here you have connected to the WiFi
+		Serial.println("connected...yeey :)");
 	}
-
+	else {
+		wifiManager.setTimeout(120);
+		int count = 0;
+		while(!wifiManager.autoConnect() && count < 3) {
+			printf("failed [%d] to connect and hit timeout\n", count);
+			delay(5000);
+			count++;
+		};
+	}
 	printf("WiFi connected\n  IP address: %s\n", WiFi.localIP().toString().c_str());
 }
 

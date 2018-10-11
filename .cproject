@@ -68,6 +68,8 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/common}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -108,6 +110,8 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/common}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -148,6 +152,8 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/common}&quot;"/>
                                     								
                                 </option>
                                 								
