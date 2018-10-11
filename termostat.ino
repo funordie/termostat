@@ -20,12 +20,25 @@ void loop()
 {
 	int res;
     static int count = 0;
-    printf("loop: start %d\n", count);
+//    printf("loop: start %d\n", count);
 
-    delay(60*1000);
+    long now = millis();
+//    printf("now:%ld\n", now);
+    static long lastMsg = 0;
+    if (now - lastMsg > 5000) {
+        lastMsg = now;
+//        printf("process\n");
+    }
+    else {
+        mqtt_loop();
+//        printf("skip\n");
+        return;
+    }
+
+    //TODO: alive message
 
     temperature_loop();
-    mqtt_loop();
+
     oled_loop();
 
     res = temperature_get_temp(&temp);
@@ -34,7 +47,7 @@ void loop()
     	return;
     }
     else {
-    	printf("process temperature: %f\n", temp);
+//    	printf("process temperature: %f\n", temp);
     }
 
     res = mqtt_publish_temperature(temp);
@@ -48,9 +61,14 @@ void loop()
     	return;
     }
     else {
-    	printf("process setpoint: %f\n", temperature_setpoint);
+//    	printf("process setpoint: %f\n", temperature_setpoint);
     }
 
-    printf("loop: return %d\n", count);
+    oled_clear();
+    res = oled_print(0, 0, String("Temperature: ") + String(temp));
+    res = oled_print(0, 10, String("Temperature SP: ") + String(temperature_setpoint));
+    oled_display();
+
+//    printf("loop: return %d\n", count);
     count ++;
 }

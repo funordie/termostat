@@ -8,7 +8,7 @@
 #include "SSD1306Wire.h" // legacy include: `#include "SSD1306.h"`
 
 #include <gpio_define.hpp>
-SSD1306Wire  display(0x3c, SSD1306_SDA, SSD1306_SCL);
+static SSD1306Wire  display(0x3c, SSD1306_SDA, SSD1306_SCL);
 
 void oled_setup() {
 	printf("%s:%d\n",__FUNCTION__, __LINE__);
@@ -20,13 +20,26 @@ void oled_setup() {
 }
 
 void oled_loop() {
-	printf("%s:%d\n",__FUNCTION__, __LINE__);
-	display.setFont(ArialMT_Plain_10);
+//	printf("%s:%d\n",__FUNCTION__, __LINE__);
+//	display.setFont(ArialMT_Plain_10);
+//
+//	// The coordinates define the left starting point of the text
+//	display.setTextAlignment(TEXT_ALIGN_LEFT);
+//	display.drawString(0, 10, "Left aligned (0,10)");
+//
+//	// write the buffer to the display
+//	display.display();
+}
+int oled_clear() {
+    display.clear();
+}
+int oled_print(int16_t xMove, int16_t yMove, String strUser) {
+    display.drawString(xMove, yMove, strUser);
 
-	// The coordinates define the left starting point of the text
-	display.setTextAlignment(TEXT_ALIGN_LEFT);
-	display.drawString(0, 10, "Left aligned (0,10)");
+    //TODO: check for errors
+    return 0;
+}
 
-	// write the buffer to the display
-	display.display();
+int oled_display() {
+    display.display();
 }

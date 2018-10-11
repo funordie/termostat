@@ -42,11 +42,12 @@ void callback(char* topic, byte* payload, unsigned int length);
 
 // Update these with values suitable for your network.
 const char* mqtt_server = "192.168.1.77";
+const uint16_t mqtt_port = 1883;
 
 static int mqtt_setpoint;
 
-#define JSON_TEMPERATURE_INDEX 1
-#define JSON_TEMPERATURE_INDEX_SP 99
+#define JSON_TEMPERATURE_INDEX 13
+#define JSON_TEMPERATURE_INDEX_SP 12
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -54,12 +55,20 @@ long lastMsg = 0;
 
 StaticJsonBuffer<300> JSONbuffer;
 
+static void mqtt_subscribe() {
+//    client.subscribe("domoticz/in");
+    client.subscribe("domoticz/out");
+    printf("subscribe to: %s\n", "domoticz/out" );
+}
+
 void mqtt_setup() {
 	printf("%s:%d\n",__FUNCTION__, __LINE__);
 	setup_wifi();
 
-	client.setServer(mqtt_server, 1883);
+	delay(5);
+	client.setServer(mqtt_server, mqtt_port);
 	client.setCallback(callback);
+	mqtt_subscribe();
 
 	pinMode(TRIGGER_PIN, INPUT);
 }
@@ -107,13 +116,13 @@ void setup_wifi() {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-	printf("Message arrived [%s]", topic);
+	printf("Message arrived [%s]\n", topic);
 
-	printf("Message payload:[");
-	for (unsigned int i = 0; i < length; i++) {
-		printf("%c", payload[i]);
-	}
-	printf("]\n");
+//	printf("Message payload:[");
+//	for (unsigned int i = 0; i < length; i++) {
+//		printf("%c", payload[i]);
+//	}
+//	printf("]\n");
 
 	//desearize JSON buffer
 	JsonObject & obj = JSONbuffer.parseObject(payload);
@@ -145,10 +154,7 @@ static void reconnect() {
 		// Attempt to connect
 		if (client.connect("ESP8266Client")) {
 			printf("connected\n");
-			// Once connected, publish an announcement...
-			client.publish("outTopic", "hello world");
-			// ... and resubscribe
-			client.subscribe("inTopic");
+			mqtt_subscribe();
 		} else {
 			printf("failed, rc=%d try again in 5 seconds\n", client.state());
 			// Wait 5 seconds before retrying
@@ -158,7 +164,7 @@ static void reconnect() {
 }
 void mqtt_loop() {
 
-	printf("%s:%d\n",__FUNCTION__, __LINE__);
+//	printf("%s:%d\n",__FUNCTION__, __LINE__);
 	if (!client.connected()) {
 		reconnect();
 	}
@@ -175,8 +181,8 @@ int mqtt_publish_temperature(float temperature) {
 
 	JsonObject & obj = JSONbuffer.createObject();
 	obj["idx"] = JSON_TEMPERATURE_INDEX;
-	obj["nvalue"] = temperature;
-	obj["svalue"] = 0;
+	obj["svalue"] = String(temperature);
+	obj["nvalue"] = 0;
 	//JSONencoder["HUM"] = h;
 	char JSONmessageBuffer[100];
 	obj.printTo(JSONmessageBuffer, sizeof(JSONmessageBuffer));
