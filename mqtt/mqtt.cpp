@@ -33,8 +33,6 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-#include <ArduinoJson.h>
-
 static void reconnect();
 void callback(char* topic, byte* payload, unsigned int length);
 
@@ -42,31 +40,34 @@ void callback(char* topic, byte* payload, unsigned int length);
 static const char* mqtt_server = "192.168.1.77";
 static const uint16_t mqtt_port = 1883;
 
-static int temperature_setpoint;
-static int temperature_external;
-
-#define JSON_TEMPERATURE_INDEX 13
-#define JSON_TEMPERATURE_INDEX_SP 12
+static float temperature_setpoint;
+static float temperature_external;
+static int temperature_mode;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-#if 0
-StaticJsonBuffer<300> JSONbuffer;
-#else
-DynamicJsonBuffer JSONbuffer;
-#endif
+String topic_sp;
+String topic_temp;
+String topic_mode;
 
 static void mqtt_subscribe() {
-//    client.subscribe("domoticz/in");
-    client.subscribe("domoticz/out");
+    client.subscribe(topic_sp.c_str());
+    client.subscribe(topic_mode.c_str());
+
 	Serial.print(__FUNCTION__);
 	Serial.print(__LINE__);
 	Serial.print("subscribe to: ");
-	Serial.println("domoticz/out");
+	Serial.println(topic_sp);
+	Serial.print("subscribe to: ");
+	Serial.println(topic_mode);
 }
 
 void mqtt_setup() {
+
+    topic_sp = String(ESP.getChipId()) + "/topic" + "/setpoint";
+    topic_mode = String(ESP.getChipId()) + "/topic" + "/mode";
+    topic_temp = String(ESP.getChipId()) + "/topic" + "/temperature";
 
 	delay(5);
 	client.setServer(mqtt_server, mqtt_port);
@@ -89,49 +90,26 @@ void callback(char* topic, byte* payload, unsigned int length) {
 		Serial.print((char)payload[i]);
 	}
 	Serial.println();
+    char str[10];
+    memcpy(str, payload, length);
+    str[length] = 0;
 
-	//desearize JSON buffer
-	JsonObject & obj = JSONbuffer.parseObject(payload);
-	if(!obj.success())
-	{
-		Serial.print(__FUNCTION__);
-		Serial.print(__LINE__);
-		Serial.println("parse error !!!!!!");
-		return;
-	}
-	int idx = obj["idx"];
-	int nvalue = obj["nvalue"];
-	int svalue = obj["svalue"];
-
-	//TODO: process JSON data
-	switch(idx) {
-	case JSON_TEMPERATURE_INDEX_SP: {
-		Serial.print(__FUNCTION__);
-		Serial.print(__LINE__);
+	if(!strcmp(topic, topic_sp.c_str())) {
+	    float value = String(str).toFloat();  //atof((char*)payload);
 		Serial.print("receive Temperature Set point: ");
-		Serial.print(nvalue);
-		Serial.print(svalue);
+		Serial.print(value);
 		Serial.println("");
-		temperature_setpoint = svalue;
-		break;
+		temperature_setpoint = value;
 	}
-	case JSON_TEMPERATURE_INDEX: {
+    if(!strcmp(topic, topic_mode.c_str())) {
+	    int value = String(str).toInt();
 		Serial.print(__FUNCTION__);
 		Serial.print(__LINE__);
 		Serial.print("receive Temperature: ");
-		Serial.print(nvalue);
-		Serial.print(svalue);
+		Serial.print(value);
 		Serial.println("");
-		temperature_external = svalue;
-		break;
+		temperature_mode = value;
 	}
-	default:
-		Serial.print(__FUNCTION__);
-		Serial.print(__LINE__);
-		Serial.print("unknown index:");
-		Serial.print(idx);
-		return;
-	};
 }
 
 static void reconnect() {
@@ -163,21 +141,7 @@ void mqtt_loop() {
 }
 
 int mqtt_publish_temperature(float temperature) {
-
-	JsonObject & obj = JSONbuffer.createObject();
-	obj["idx"] = JSON_TEMPERATURE_INDEX;
-	obj["svalue"] = String(temperature);
-	obj["nvalue"] = 0;
-	//JSONencoder["HUM"] = h;
-	char JSONmessageBuffer[100];
-	obj.printTo(JSONmessageBuffer, sizeof(JSONmessageBuffer));
-
-	Serial.println("publish temperature debug start");
-	Serial.print(__FUNCTION__);
-	Serial.print(__LINE__);
-	Serial.print(JSONmessageBuffer);
-	Serial.println("publish temperature debug end");
-	client.publish("domoticz/in",JSONmessageBuffer,false);
+	client.publish(topic_temp.c_str(),String(temperature).c_str(),true);
 
 	//TODO: check for error
 	return 0;
@@ -197,4 +161,12 @@ int mqtt_get_temperature(float * value) {
 
 	//TODO: check for error
 	return 0;
+}
+
+int mqtt_get_mode(int * value) {
+
+    *value = temperature_mode;
+
+    //TODO: check for error
+    return 0;
 }

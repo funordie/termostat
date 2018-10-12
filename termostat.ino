@@ -5,10 +5,11 @@
 #include <wifi.hpp>
 
 //#define _USE_EXTERNAL_TEMPERATURE_
-
-static float temperature = 0;
+#define DB 0.5f
+static float temperature;
 static float temperature_setpoint;
-
+static int   termostat_status;
+static int   termostat_mode;
 //The setup function is called once at startup of the sketch
 void setup()
 {
@@ -53,12 +54,12 @@ void loop()
     	Serial.println("read temperature error!!!!");
     	return;
     }
-    else {
-    	Serial.print(__FUNCTION__);
-    	Serial.print(__LINE__);
-    	Serial.print("process temperature:");
-    	Serial.println(temperature);
-    }
+//    else {
+//    	Serial.print(__FUNCTION__);
+//    	Serial.print(__LINE__);
+//    	Serial.print("process temperature:");
+//    	Serial.println(temperature);
+//    }
 
     res = mqtt_publish_temperature(temperature);
     if(res) {
@@ -74,16 +75,39 @@ void loop()
     	Serial.println("get setpoint error !!!");
     	return;
     }
-    else {
-    	Serial.print(__FUNCTION__);
-    	Serial.print(__LINE__);
-    	Serial.print("process setpoint:");
-    	Serial.println(temperature_setpoint);
+//    else {
+//    	Serial.print(__FUNCTION__);
+//    	Serial.print(__LINE__);
+//    	Serial.print("process setpoint:");
+//    	Serial.println(temperature_setpoint);
+//    }
+
+    res = mqtt_get_mode(&termostat_mode);
+    if(res) {
+        Serial.print(__FUNCTION__);
+        Serial.print(__LINE__);
+        Serial.println("get mode error !!!");
+        return;
+    }
+//    else {
+//      Serial.print(__FUNCTION__);
+//      Serial.print(__LINE__);
+//      Serial.print("process mode:");
+//      Serial.println(termostat_mode);
+//    }
+
+    if(temperature + DB > temperature_setpoint) {
+        termostat_status = 0;
+    }
+    else if(temperature - DB < temperature_setpoint) {
+        termostat_status = 1;
     }
 
     oled_clear();
     res = oled_print(0, 0, String("Temperature: ") + String(temperature));
     res = oled_print(0, 10, String("Temperature SP: ") + String(temperature_setpoint));
+    res = oled_print(0, 20, String("Mode: ") + String(termostat_mode));
+    res = oled_print(0, 30, String("Status: ") + String(termostat_status));
     oled_display();
 
     count ++;
