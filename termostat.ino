@@ -2,73 +2,89 @@
 #include <mqtt.hpp>
 #include <temperature.hpp>
 #include <oled.hpp>
+#include <wifi.hpp>
 
-static float temp = 0;
+//#define _USE_EXTERNAL_TEMPERATURE_
+
+static float temperature = 0;
+static float temperature_setpoint;
+
 //The setup function is called once at startup of the sketch
 void setup()
 {
     Serial.begin(115200);
 
+    wifi_setup();
+	mqtt_setup();
     tempetarure_setup();
-    mqtt_setup();
     oled_setup();
 }
 
-static float temperature_setpoint;
 // The loop function is called in an endless loop
 void loop()
 {
 	int res;
     static int count = 0;
-//    printf("loop: start %d\n", count);
 
     long now = millis();
-//    printf("now:%ld\n", now);
     static long lastMsg = 0;
     if (now - lastMsg > 5000) {
         lastMsg = now;
-//        printf("process\n");
     }
     else {
         mqtt_loop();
-//        printf("skip\n");
         return;
     }
 
     //TODO: alive message
 
+    //loop all devices
     temperature_loop();
-
     oled_loop();
 
-    res = temperature_get_temp(&temp);
+#ifdef _USE_EXTERNAL_TEMPERATURE_
+    res = mqtt_get_temperature(&temperature);
+#else
+    res = temperature_get_temperature(&temperature);
+#endif
     if(res) {
-    	printf("read temperature error!!!!\n");
+    	Serial.print(__FUNCTION__);
+    	Serial.print(__LINE__);
+    	Serial.println("read temperature error!!!!");
     	return;
     }
     else {
-//    	printf("process temperature: %f\n", temp);
+    	Serial.print(__FUNCTION__);
+    	Serial.print(__LINE__);
+    	Serial.print("process temperature:");
+    	Serial.println(temperature);
     }
 
-    res = mqtt_publish_temperature(temp);
+    res = mqtt_publish_temperature(temperature);
     if(res) {
-    	printf("sent temperature error!!!!\n");
+    	Serial.print(__FUNCTION__);
+    	Serial.print(__LINE__);
+    	Serial.println("sent temperature error !!!");
     }
 
     res = mqtt_get_setpoint(&temperature_setpoint);
     if(res) {
-    	printf("get setpoint error\n");
+    	Serial.print(__FUNCTION__);
+    	Serial.print(__LINE__);
+    	Serial.println("get setpoint error !!!");
     	return;
     }
     else {
-//    	printf("process setpoint: %f\n", temperature_setpoint);
+    	Serial.print(__FUNCTION__);
+    	Serial.print(__LINE__);
+    	Serial.print("process setpoint:");
+    	Serial.println(temperature_setpoint);
     }
 
     oled_clear();
-    res = oled_print(0, 0, String("Temperature: ") + String(temp));
+    res = oled_print(0, 0, String("Temperature: ") + String(temperature));
     res = oled_print(0, 10, String("Temperature SP: ") + String(temperature_setpoint));
     oled_display();
 
-//    printf("loop: return %d\n", count);
     count ++;
 }

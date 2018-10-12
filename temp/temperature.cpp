@@ -19,28 +19,24 @@ DallasTemperature sensors(&oneWire);
 static float temperature;
 
 void tempetarure_setup() {
-	printf("%s:%d\n",__FUNCTION__, __LINE__);
 	sensors.begin();
 }
 
 void temperature_loop() {
-//	printf("%s:%d\n",__FUNCTION__, __LINE__);
 	// call sensors.requestTemperatures() to issue a global temperature
 	// request to all devices on the bus
-//	printf("Requesting temperatures...\n");
 	sensors.requestTemperatures(); // Send the command to get temperatures
-//	printf("DONE\n");
 	// After we got the temperatures, we can print them here.
 	// We use the function ByIndex, and as an example get the temperature from the first sensor only.
-
 	temperature = sensors.getTempCByIndex(0);
-//	printf("Temperature for the device 1 (index 0) is: %f\n", temperature);
 }
 
-int temperature_get_temp(float * fTemp) {
+int temperature_get_temperature(float * fTemp) {
 
 	if(fTemp == NULL) {
-		printf("%s null pointer\n", __FUNCTION__);
+		Serial.print(__FUNCTION__);
+		Serial.print(__LINE__);
+		Serial.println("null pointer !!!");
 		return -1;
 	}
 	*fTemp = temperature;
