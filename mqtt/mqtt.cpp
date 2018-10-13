@@ -33,6 +33,8 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+#include <common.hpp>
+
 static void reconnect();
 void callback(char* topic, byte* payload, unsigned int length);
 
@@ -69,14 +71,13 @@ void mqtt_setup() {
     topic_mode = String(ESP.getChipId()) + "/topic" + "/mode";
     topic_temp = String(ESP.getChipId()) + "/topic" + "/temperature";
 
-	delay(5);
+	delay(5000);
 	client.setServer(mqtt_server, mqtt_port);
 	client.setCallback(callback);
 
 	if (!client.connected()) {
 		reconnect();
 	}
-
 	mqtt_subscribe();
 }
 
@@ -136,11 +137,16 @@ void mqtt_loop() {
 
 	if (!client.connected()) {
 		reconnect();
+		mqtt_subscribe();
 	}
 	client.loop();
 }
 
 int mqtt_publish_temperature(float temperature) {
+
+    static long lastMsg = 0;
+    if(limit_execution_time_sec(&lastMsg, 10)) return 0;
+
 	client.publish(topic_temp.c_str(),String(temperature).c_str(),true);
 
 	//TODO: check for error

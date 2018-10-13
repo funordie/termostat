@@ -6,7 +6,7 @@
  */
 #include <WiFiManager.h>
 
-#include <gpio_define.hpp>
+#include <common.hpp>
 
 void wifi_setup() {
 

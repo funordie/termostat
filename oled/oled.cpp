@@ -7,7 +7,7 @@
 
 #include "SSD1306Wire.h" // legacy include: `#include "SSD1306.h"`
 
-#include <gpio_define.hpp>
+#include <common.hpp>
 static SSD1306Wire  display(0x3c, SSD1306_SDA, SSD1306_SCL);
 
 void oled_setup() {

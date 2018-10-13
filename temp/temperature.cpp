@@ -8,7 +8,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#include <gpio_define.hpp>
+#include <common.hpp>
 
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 OneWire oneWire(DS18b20_PIN);
@@ -23,6 +23,9 @@ void tempetarure_setup() {
 }
 
 void temperature_loop() {
+
+    static long lastMsg = 0;
+    if(limit_execution_time_sec(&lastMsg, 10)) return;
 	// call sensors.requestTemperatures() to issue a global temperature
 	// request to all devices on the bus
 	sensors.requestTemperatures(); // Send the command to get temperatures
@@ -33,12 +36,8 @@ void temperature_loop() {
 
 int temperature_get_temperature(float * fTemp) {
 
-	if(fTemp == NULL) {
-		Serial.print(__FUNCTION__);
-		Serial.print(__LINE__);
-		Serial.println("null pointer !!!");
-		return -1;
-	}
 	*fTemp = temperature;
+
+	//TODO: check for errors
 	return 0;
 }
