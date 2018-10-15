@@ -67,6 +67,12 @@ static void mqtt_subscribe() {
 
 void mqtt_setup() {
 
+	Serial.println("WIFI Connecting ...");
+	while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
+		delay(250);
+		Serial.print('.');
+	}
+
     topic_sp = String(ESP.getChipId()) + "/topic" + "/setpoint";
     topic_mode = String(ESP.getChipId()) + "/topic" + "/mode";
     topic_temp = String(ESP.getChipId()) + "/topic" + "/temperature";

@@ -51,27 +51,33 @@
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/common}&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/OneWire}&quot;"/>
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/wifi}&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ArduinoJson/src}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DallasTemperature}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/web}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WiFi/src}&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/PubSubClient/src}&quot;"/>
-                                    									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/WiFiManager}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DallasTemperature}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266mDNS}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/OneWire}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/PubSubClient/src}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266_and_ESP32_Oled_Driver_for_SSD1306_display/src}&quot;"/>
                                     									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Brzo_I2C}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/SPI}&quot;"/>
+                                    									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Wire}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/wifi}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -95,27 +101,33 @@
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/common}&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/OneWire}&quot;"/>
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/wifi}&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ArduinoJson/src}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DallasTemperature}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/web}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WiFi/src}&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/PubSubClient/src}&quot;"/>
-                                    									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/WiFiManager}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DallasTemperature}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266mDNS}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/OneWire}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/PubSubClient/src}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266_and_ESP32_Oled_Driver_for_SSD1306_display/src}&quot;"/>
                                     									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Brzo_I2C}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/SPI}&quot;"/>
+                                    									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Wire}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/wifi}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -139,27 +151,33 @@
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/common}&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/OneWire}&quot;"/>
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/wifi}&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ArduinoJson/src}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DallasTemperature}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/web}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WiFi/src}&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/PubSubClient/src}&quot;"/>
-                                    									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/WiFiManager}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266WebServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DallasTemperature}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266mDNS}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/OneWire}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/PubSubClient/src}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266_and_ESP32_Oled_Driver_for_SSD1306_display/src}&quot;"/>
                                     									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Brzo_I2C}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/SPI}&quot;"/>
+                                    									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Wire}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/wifi}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/DNSServer/src}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -209,7 +227,15 @@
     	
     <storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
     	
-    <storageModule moduleId="refreshScope"/>
+    <storageModule moduleId="refreshScope" versionNumber="2">
+        		
+        <configuration configurationName="Release">
+            			
+            <resource resourceType="PROJECT" workspacePath="/termostat"/>
+            		
+        </configuration>
+        	
+    </storageModule>
     	
     <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
     
