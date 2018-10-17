@@ -10,6 +10,7 @@
 const char* host = "esp8266-webupdate";
 
 ESP8266WebServer server(80);
+String webpage = "";
 
 void handle_root() {
     server.sendHeader("Connection", "close");
@@ -48,6 +49,29 @@ void handle_update_ufn() {
     yield();
 }
 
+// A short methoid of adding the same web page header to some text
+void append_webpage_header() {
+    // webpage is a global variable
+    webpage = ""; // Clear the variable
+    webpage += "<!DOCTYPE html><html lang=\"en\"><head><title>DHT Web Server</title>";
+    webpage += "<style>";
+    webpage += "#header  {background-color:blue;      font-family:Tahoma,Verdana,Serif,sans-serif; width:1024px; padding:5px; color:white; text-align:center; }";
+    webpage += "#section {background-color:#C2DEFF;   font-family:Tahoma,Verdana,Serif,sans-serif; width:1024px; padding:5px; color:blue;  font-size:20px; text-align:center;}";
+    webpage += "#footer  {background-color:steelblue; font-family:Tahoma,Verdana,Serif,sans-serif; width:1024px; padding:5px; color:white; font-size:12px; clear:both; text-align:center;}";
+    webpage += "</style></head><body>";
+}
+
+void append_webpage_footer() {
+    webpage += "</body></html>";
+}
+
+void handle_log() {
+    append_webpage_header();
+
+    append_webpage_footer();
+    server.send(200, "text/html", webpage);
+}
+
 void web_setup(void) {
     Serial.println("WIFI Connecting ...");
     while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
@@ -58,6 +82,7 @@ void web_setup(void) {
     MDNS.begin(host);
     server.on("/", HTTP_GET, handle_root);
     server.on("/update", HTTP_POST, handle_update_fn,  handle_update_ufn);
+    server.on("/log", HTTP_POST, handle_log);
     server.begin();
     MDNS.addService("http", "tcp", 80);
 
