@@ -47,6 +47,11 @@
 			<locationURI>PROJECT_LOC/oled</locationURI>
 		</link>
 		<link>
+			<name>settings</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/settings</locationURI>
+		</link>
+		<link>
 			<name>temp</name>
 			<type>2</type>
 			<locationURI>PROJECT_LOC/temp</locationURI>
@@ -85,6 +90,11 @@
 			<name>libraries/DallasTemperature</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/DallasTemperature/3.8.0</locationURI>
+		</link>
+		<link>
+			<name>libraries/EEPROM</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/EEPROM</locationURI>
 		</link>
 		<link>
 			<name>libraries/ESP8266WebServer</name>

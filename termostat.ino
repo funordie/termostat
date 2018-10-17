@@ -4,6 +4,7 @@
 #include <oled.hpp>
 #include <wifi.hpp>
 #include <webserver.hpp>
+#include <settings.hpp>
 
 //#define _USE_EXTERNAL_TEMPERATURE_
 #define DB 0.5f
@@ -32,6 +33,7 @@ void setup()
     tempetarure_setup();
     oled_setup();
     web_setup();
+    settings_setup();
 }
 
 // The loop function is called in an endless loop
@@ -46,6 +48,7 @@ void loop()
     temperature_loop();
     oled_loop();
     web_loop();
+    settings_loop();
 
 #ifdef _USE_EXTERNAL_TEMPERATURE_
     res = mqtt_get_temperature(&temperature);
