@@ -40,6 +40,8 @@ void setup()
 void loop()
 {
 	int res;
+    static long lastMsg = 0;
+    if(limit_execution_time_sec(&lastMsg, 5)) return;
 
     //TODO: alive message
 
@@ -60,7 +62,7 @@ void loop()
     	return;
     }
 //    else {
-//    	addToLog(LOG_LEVEL_ERROR, "process temperature: %d", temperature);
+//    	addToLog(LOG_LEVEL_ERROR, "process temperature: %f", temperature);
 //    }
 
     res = mqtt_publish_temperature(temperature);
@@ -74,7 +76,7 @@ void loop()
     	return;
     }
 //    else {
-//    	addToLog(LOG_LEVEL_ERROR, "process setpoint: %d", temperature_setpoint);
+//    	addToLog(LOG_LEVEL_ERROR, "process setpoint: %f", temperature_setpoint);
 //    }
 
     res = mqtt_get_mode(&termostat_mode);
@@ -99,4 +101,6 @@ void loop()
     res = oled_print(0, 20, String("Mode: ") + String(termostat_mode));
     res = oled_print(0, 30, String("Status: ") + String(termostat_status));
     oled_display();
+
+//    addToLog(LOG_LEVEL_ERROR, "\n\n\n");
 }

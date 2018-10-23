@@ -10,6 +10,7 @@
 
 void wifi_setup() {
 
+    addToLog(LOG_LEVEL_ERROR,"%s:%d", __FUNCTION__, __LINE__);
 	pinMode(TRIGGER_PIN, INPUT);
 
 	//WiFiManager

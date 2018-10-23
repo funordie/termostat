@@ -108,11 +108,15 @@ void handle_log() {
     weblog = "";
 #else
 
+    //get all logs
+    String str = "";
+    getLogAll(str);
+    server.send(200, "text/html", str.c_str());
 #endif
 }
 
 void web_setup(void) {
-    addToLog(LOG_LEVEL_ERROR, "WIFI Connecting ... %d", 11);
+    addToLog(LOG_LEVEL_ERROR,"%s:%d", __FUNCTION__, __LINE__);
     while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
         delay(250);
         addToLog(LOG_LEVEL_ERROR, '.');
@@ -138,13 +142,8 @@ void web_setup(void) {
 
 void web_loop(void) {
     server.handleClient();
-    static int count = 0;
-    count++;
-    if(count <= 1000) {
-        return;
-    }
-    count = 0;
-    addToLog(LOG_LEVEL_ERROR, String(count));
-//    WebLog(String(count));
-//    delay(1);
+    static long lastMsg = 0;
+    if(limit_execution_time_sec(&lastMsg, 10)) return;
+
+//    addToLog(LOG_LEVEL_ERROR,"%s:%d", __FUNCTION__, __LINE__);
 }

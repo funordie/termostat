@@ -270,10 +270,12 @@ int LoadSettings()
 }
 
 void settings_setup() {
-    addToLog(LOG_LEVEL_ERROR,"settings loop");
+    addToLog(LOG_LEVEL_ERROR,"%s:%d", __FUNCTION__, __LINE__);
 }
 
 void settings_loop() {
+    static long lastMsg = 0;
+    if(limit_execution_time_sec(&lastMsg, 10)) return;
 
-    addToLog(LOG_LEVEL_ERROR,"settings loop");
+//    addToLog(LOG_LEVEL_ERROR,"%s:%d", __FUNCTION__, __LINE__);
 }

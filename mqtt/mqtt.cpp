@@ -62,7 +62,7 @@ static void mqtt_subscribe() {
 
 void mqtt_setup() {
 
-    addToLog(LOG_LEVEL_ERROR, "WIFI Connecting ...");
+    addToLog(LOG_LEVEL_ERROR,"%s:%d", __FUNCTION__, __LINE__);
 	while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
 		delay(250);
 		addToLog(LOG_LEVEL_ERROR, '.');

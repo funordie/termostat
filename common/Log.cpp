@@ -297,7 +297,7 @@ size_t addToLog(byte logLevel, const char *format, ...)
     }
     //serial log
     len = Serial.write((const uint8_t*) buffer, len);
-
+    len = Serial.write("\n");
     //web log
     Logging.add(logLevel, buffer);
 
@@ -314,8 +314,12 @@ String getLog(bool& logLinesAvailable) {
 
 void getLogAll(String& str) {
     str = "";
+    Serial.printf("%s: start\n", __FUNCTION__);
     bool logLinesAvailable;
     do{
-        str += getLog(logLinesAvailable);
+
+        String tmp = getLog(logLinesAvailable);
+        Serial.printf("%s: getLog return %s\n", __FUNCTION__, tmp.c_str());
+        str += tmp + "\n";
     }while(logLinesAvailable);
 }
