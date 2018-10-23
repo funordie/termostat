@@ -56,51 +56,34 @@ void loop()
     res = temperature_get_temperature(&temperature);
 #endif
     if(res) {
-    	Serial.print(__FUNCTION__);
-    	Serial.print(__LINE__);
-    	Serial.println("read temperature error!!!!");
+        addToLog(LOG_LEVEL_ERROR, "read temperature error!!!!");
     	return;
     }
 //    else {
-//    	Serial.print(__FUNCTION__);
-//    	Serial.print(__LINE__);
-//    	Serial.print("process temperature:");
-//    	Serial.println(temperature);
+//    	addToLog(LOG_LEVEL_ERROR, "process temperature: %d", temperature);
 //    }
 
     res = mqtt_publish_temperature(temperature);
     if(res) {
-    	Serial.print(__FUNCTION__);
-    	Serial.print(__LINE__);
-    	Serial.println("sent temperature error !!!");
+        addToLog(LOG_LEVEL_ERROR, "sent temperature error !!!");
     }
 
     res = mqtt_get_setpoint(&temperature_setpoint);
     if(res) {
-    	Serial.print(__FUNCTION__);
-    	Serial.print(__LINE__);
-    	Serial.println("get setpoint error !!!");
+        addToLog(LOG_LEVEL_ERROR, "get setpoint error !!!");
     	return;
     }
 //    else {
-//    	Serial.print(__FUNCTION__);
-//    	Serial.print(__LINE__);
-//    	Serial.print("process setpoint:");
-//    	Serial.println(temperature_setpoint);
+//    	addToLog(LOG_LEVEL_ERROR, "process setpoint: %d", temperature_setpoint);
 //    }
 
     res = mqtt_get_mode(&termostat_mode);
     if(res) {
-        Serial.print(__FUNCTION__);
-        Serial.print(__LINE__);
-        Serial.println("get mode error !!!");
+        addToLog(LOG_LEVEL_ERROR, "get mode error !!!");
         return;
     }
 //    else {
-//      Serial.print(__FUNCTION__);
-//      Serial.print(__LINE__);
-//      Serial.print("process mode:");
-//      Serial.println(termostat_mode);
+//      addToLog(LOG_LEVEL_ERROR, "process mode: %d", termostat_mode);
 //    }
 
     if(temperature + DB > temperature_setpoint) {

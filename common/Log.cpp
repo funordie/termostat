@@ -261,21 +261,50 @@ private:
 
 } Logging;
 
-void addLog(byte loglevel, const String& string)
+void addToLog(byte loglevel, const String& string)
 {
-    addLog(loglevel, string.c_str());
+    addToLog(loglevel, string.c_str());
 }
 
-void addLog(byte logLevel, const __FlashStringHelper* flashString)
-{
-    String s(flashString);
-    addLog(logLevel, s.c_str());
-}
+//void addToLog(byte logLevel, const __FlashStringHelper* flashString)
+//{
+//    String s(flashString);
+//    addToLog(logLevel, s.c_str());
+//}
 
-void addLog(byte logLevel, const char *line)
+void addToLog(byte logLevel, const char ch)
 {
     //weblog
-    Logging.add(logLevel, line);
+    Logging.add(logLevel, String(ch).c_str());
+}
+
+size_t addToLog(byte logLevel, const char *format, ...)
+{
+    va_list arg;
+    va_start(arg, format);
+    char temp[64];
+    char* buffer = temp;
+    size_t len = vsnprintf(temp, sizeof(temp), format, arg);
+    va_end(arg);
+    if (len > sizeof(temp) - 1) {
+        buffer = new char[len + 1];
+        if (!buffer) {
+            return 0;
+        }
+        va_start(arg, format);
+        vsnprintf(buffer, len + 1, format, arg);
+        va_end(arg);
+    }
+    //serial log
+    len = Serial.write((const uint8_t*) buffer, len);
+
+    //web log
+    Logging.add(logLevel, buffer);
+
+    if (buffer != temp) {
+        delete[] buffer;
+    }
+    return len;
 }
 
 String getLog(bool& logLinesAvailable) {

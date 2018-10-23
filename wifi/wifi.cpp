@@ -30,7 +30,7 @@ void wifi_setup() {
 		//WiFi.mode(WIFI_STA);
 
 		if (!wifiManager.startConfigPortal("IP_AP", "IP_AP_PASS")) {
-			Serial.println("failed to connect and hit timeout");
+		    addToLog(LOG_LEVEL_ERROR, "failed to connect and hit timeout");
 			delay(3000);
 			//reset and try again, or maybe put it to deep sleep
 			ESP.reset();
@@ -38,23 +38,17 @@ void wifi_setup() {
 		}
 
 		//if you get here you have connected to the WiFi
-		Serial.println("connected...yeey :)");
+		addToLog(LOG_LEVEL_ERROR, "connected...yeey :)");
 	}
 	else {
 		wifiManager.setTimeout(120);
 		int count = 0;
 		while(!wifiManager.autoConnect() && count < 3) {
-			Serial.print(__FUNCTION__);
-			Serial.print(__LINE__);
-			Serial.println("failed to connect and hit timeout");
+		    addToLog(LOG_LEVEL_ERROR, "failed to connect and hit timeout");
 			delay(5000);
 			count++;
 		};
 	}
-	Serial.print(__FUNCTION__);
-	Serial.print(__LINE__);
-	Serial.print("WiFi connected: ");
-	Serial.print(WiFi.localIP().toString().c_str());
-	Serial.println(WiFi.SSID());
+	addToLog(LOG_LEVEL_ERROR, "WiFi connected: %s %s", WiFi.localIP().toString().c_str(), WiFi.SSID().c_str());
 }
 

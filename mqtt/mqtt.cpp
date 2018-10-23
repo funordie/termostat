@@ -57,20 +57,15 @@ static void mqtt_subscribe() {
     client.subscribe(topic_sp.c_str());
     client.subscribe(topic_mode.c_str());
 
-	Serial.print(__FUNCTION__);
-	Serial.print(__LINE__);
-	Serial.print("subscribe to: ");
-	Serial.println(topic_sp);
-	Serial.print("subscribe to: ");
-	Serial.println(topic_mode);
+    addToLog(LOG_LEVEL_ERROR, "subscribe to: sp:%s mode:%s", topic_sp.c_str(), topic_mode.c_str());
 }
 
 void mqtt_setup() {
 
-	Serial.println("WIFI Connecting ...");
+    addToLog(LOG_LEVEL_ERROR, "WIFI Connecting ...");
 	while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
 		delay(250);
-		Serial.print('.');
+		addToLog(LOG_LEVEL_ERROR, '.');
 	}
 
     topic_sp = String(ESP.getChipId()) + "/topic" + "/setpoint";
@@ -88,33 +83,26 @@ void mqtt_setup() {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-	Serial.print(__FUNCTION__);
-	Serial.print(__LINE__);
-	Serial.print("Message arrived [");
-	Serial.print(topic);
-	Serial.print("] ");
+    addToLog(LOG_LEVEL_ERROR, "Message arrived [%s] ", topic);
 	for (unsigned int i=0;i<length;i++) {
-		Serial.print((char)payload[i]);
+	    addToLog(LOG_LEVEL_ERROR, "%c", (char)payload[i]);
 	}
-	Serial.println();
-    char str[10];
-    memcpy(str, payload, length);
+	addToLog(LOG_LEVEL_ERROR, "\n");
+
+	//TODO: check for size
+#define PL_SIZE 64
+    char str[PL_SIZE];
+    strncpy(str, (const char *)payload, PL_SIZE);
     str[length] = 0;
 
 	if(!strcmp(topic, topic_sp.c_str())) {
 	    float value = String(str).toFloat();  //atof((char*)payload);
-		Serial.print("receive Temperature Set point: ");
-		Serial.print(value);
-		Serial.println("");
+	    addToLog(LOG_LEVEL_ERROR, "receive Temperature Set point: %d", value);
 		temperature_setpoint = value;
 	}
     if(!strcmp(topic, topic_mode.c_str())) {
 	    int value = String(str).toInt();
-		Serial.print(__FUNCTION__);
-		Serial.print(__LINE__);
-		Serial.print("receive Temperature: ");
-		Serial.print(value);
-		Serial.println("");
+	    addToLog(LOG_LEVEL_ERROR, "receive Temperature: %d", value);
 		temperature_mode = value;
 	}
 }
@@ -122,18 +110,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
 static void reconnect() {
 	  // Loop until we're reconnected
 	  while (!client.connected()) {
-	    Serial.print("Attempting MQTT connection...");
+	      addToLog(LOG_LEVEL_ERROR, "Attempting MQTT connection...");
 	    // Attempt to connect
 	    if (client.connect("arduinoClient")) {
-	      Serial.println("connected");
+	      addToLog(LOG_LEVEL_ERROR, "connected");
 	      // Once connected, publish an announcement...
 	      client.publish("outTopic","hello world");
 	      // ... and resubscribe
 	      client.subscribe("inTopic");
 	    } else {
-	      Serial.print("failed, rc=");
-	      Serial.print(client.state());
-	      Serial.println(" try again in 5 seconds");
+	      addToLog(LOG_LEVEL_ERROR, "failed, rc=%d try again in 5 seconds", client.state());
 	      // Wait 5 seconds before retrying
 	      delay(5000);
 	    }

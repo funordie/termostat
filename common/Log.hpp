@@ -8,8 +8,9 @@
 #ifndef COMMON_LOG_HPP_
 #define COMMON_LOG_HPP_
 
-void addLog(byte loglevel, const String& string);
-void addLog(byte logLevel, const __FlashStringHelper* flashString);
-void addLog(byte logLevel, const char *line);
+void addToLog(byte loglevel, const String& string);
+void addToLog(byte logLevel, const __FlashStringHelper* flashString);
+void addToLog(byte logLevel, const char ch);
+size_t addToLog(byte logLevel, const char *format, ...);
 
 #endif /* COMMON_LOG_HPP_ */

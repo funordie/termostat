@@ -72,7 +72,7 @@ void handle_update_ufn() {
     if (upload.status == UPLOAD_FILE_START) {
         Serial.setDebugOutput(true);
         WiFiUDP::stopAll();
-        Serial.printf("Update: %s\n", upload.filename.c_str());
+        addToLog(LOG_LEVEL_ERROR, "Update: %s\n", upload.filename.c_str());
         uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
         if (!Update.begin(maxSketchSpace)) { //start with max available size
             Update.printError(Serial);
@@ -83,7 +83,7 @@ void handle_update_ufn() {
         }
     } else if (upload.status == UPLOAD_FILE_END) {
         if (Update.end(true)) { //true to set the size to the current progress
-            Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+            addToLog(LOG_LEVEL_ERROR, "Update Success: %u\nRebooting...\n", upload.totalSize);
         } else {
             Update.printError(Serial);
         }
@@ -112,10 +112,10 @@ void handle_log() {
 }
 
 void web_setup(void) {
-    Serial.println("WIFI Connecting ...");
+    addToLog(LOG_LEVEL_ERROR, "WIFI Connecting ... %d", 11);
     while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
         delay(250);
-        Serial.print('.');
+        addToLog(LOG_LEVEL_ERROR, '.');
     }
 
     MDNS.begin(host);
@@ -125,24 +125,16 @@ void web_setup(void) {
     server.begin();
     MDNS.addService("http", "tcp", 80);
 
-    Serial.printf("Ready! Open http://%s.local in your browser\n", host);
+    addToLog(LOG_LEVEL_ERROR, "Ready! Open http://%s.local in your browser\n", host);
 
     configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
-    Serial.println("\nWaiting for time");
+    addToLog(LOG_LEVEL_ERROR, "\nWaiting for time");
     while (!time(nullptr)) {
-      Serial.println("config time error");
+        addToLog(LOG_LEVEL_ERROR, "config time error");
       delay(1000);
     }
-    Serial.println("config time ok");
+    addToLog(LOG_LEVEL_ERROR, "config time ok");
 }
-
-//void WebLog(String message) {
-//    time_t now = time(nullptr);
-//    weblog +=(String(ctime(&now)));
-//    weblog +=(String(":"));
-//    weblog +=(message);
-//
-//}
 
 void web_loop(void) {
     server.handleClient();
@@ -152,7 +144,7 @@ void web_loop(void) {
         return;
     }
     count = 0;
-    addLog(LOG_LEVEL_ERROR, String(count));
+    addToLog(LOG_LEVEL_ERROR, String(count));
 //    WebLog(String(count));
 //    delay(1);
 }
