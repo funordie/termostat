@@ -9,7 +9,7 @@
 #define WIFI_WIFI_HPP_
 
 void wifi_setup();
-
+void wifi_check();
 
 
 #endif /* WIFI_WIFI_HPP_ */

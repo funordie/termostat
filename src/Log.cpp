@@ -13,6 +13,8 @@
 
 #include <common.hpp>
 
+extern Settings_t Settings;
+
 /*********************************************************************************************\
  * LogStruct
 \*********************************************************************************************/
@@ -280,31 +282,36 @@ void addToLog(byte logLevel, const char ch)
 
 size_t addToLog(byte logLevel, const char *format, ...)
 {
-    va_list arg;
-    va_start(arg, format);
-    char temp[64];
-    char* buffer = temp;
-    size_t len = vsnprintf(temp, sizeof(temp), format, arg);
-    va_end(arg);
-    if (len > sizeof(temp) - 1) {
-        buffer = new char[len + 1];
-        if (!buffer) {
-            return 0;
-        }
+    if(logLevel <= Settings.logLevel) {
+        va_list arg;
         va_start(arg, format);
-        vsnprintf(buffer, len + 1, format, arg);
+        char temp[64];
+        char* buffer = temp;
+        size_t len = vsnprintf(temp, sizeof(temp), format, arg);
         va_end(arg);
-    }
-    //serial log
-    len = Serial.write((const uint8_t*) buffer, len);
-    len = Serial.write("\n");
-    //web log
-    Logging.add(logLevel, buffer);
+        if (len > sizeof(temp) - 1) {
+            buffer = new char[len + 1];
+            if (!buffer) {
+                return 0;
+            }
+            va_start(arg, format);
+            vsnprintf(buffer, len + 1, format, arg);
+            va_end(arg);
+        }
+        buffer[len + 1] = '\n';
 
-    if (buffer != temp) {
-        delete[] buffer;
+        //serial log
+        len = Serial.write((const uint8_t*) buffer, len);
+
+        //web log
+        Logging.add(logLevel, buffer);
+
+        if (buffer != temp) {
+            delete[] buffer;
+        }
+        return len;
     }
-    return len;
+    return 0;
 }
 
 String getLog(bool& logLinesAvailable) {

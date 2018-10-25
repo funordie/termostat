@@ -10,7 +10,7 @@
 
 void wifi_setup() {
 
-    addToLog(LOG_LEVEL_ERROR,"%s:%d", __FUNCTION__, __LINE__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 	pinMode(TRIGGER_PIN, INPUT);
 
 	//WiFiManager
@@ -53,3 +53,6 @@ void wifi_setup() {
 	addToLog(LOG_LEVEL_ERROR, "WiFi connected: %s %s", WiFi.localIP().toString().c_str(), WiFi.SSID().c_str());
 }
 
+void wifi_check() {
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+}

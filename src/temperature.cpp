@@ -19,13 +19,12 @@ DallasTemperature sensors(&oneWire);
 static float temperature;
 
 void tempetarure_setup() {
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 	sensors.begin();
 }
 
 void temperature_loop() {
 
-    static long lastMsg = 0;
-    if(limit_execution_time_sec(&lastMsg, 10)) return;
 	// call sensors.requestTemperatures() to issue a global temperature
 	// request to all devices on the bus
 	sensors.requestTemperatures(); // Send the command to get temperatures
