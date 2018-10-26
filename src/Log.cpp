@@ -298,9 +298,10 @@ size_t addToLog(byte logLevel, const char *format, ...)
             vsnprintf(buffer, len + 1, format, arg);
             va_end(arg);
         }
-        buffer[len + 1] = '\n';
+        buffer[len + 1] = 0;
 
         //serial log
+//        len = Serial.write((const uint8_t*) buffer, len);
         len = Serial.write((const uint8_t*) buffer, len);
 
         //web log

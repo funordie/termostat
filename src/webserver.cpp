@@ -93,10 +93,10 @@ void handle_update_ufn() {
 void GetSwitchState()
 {
     if (digitalRead(3)) {
-        server.send(200, "Switch state: ON");
+        server.send(200, "text/html", "Switch state: ON");
     }
     else {
-        server.send(200, "Switch state: OFF");
+        server.send(200, "text/html", "Switch state: OFF");
     }
 }
 
@@ -108,48 +108,32 @@ void handle_ajax_log() {
 }
 
 void handle_log() {
-#if 1
+
     append_webpage_header();
 
-#if 0
-    webpage += javascriptCode;
-#elif 0
-    webpage += jslogger;
-#else
     //javascript
-    webpage += "<script>";
-    webpage += "function GetSwitchState() {";
-    webpage += "nocache = \"&nocache=\" + Math.random() * 1000000;";
-    webpage += "var request = new XMLHttpRequest();";
-    webpage += "request.onreadystatechange = function() {";
-    webpage += "if (this.readyState == 4) {";
-    webpage += "if (this.status == 200) {";
-    webpage += "if (this.responseText != null) {";
-    webpage += "document.getElementById(\"switch_txt\").innerHTML = this.responseText;";
-    webpage += "}}}}";
-    webpage += "request.open(\"GET\", \"ajax_switch\" + nocache, true);";
-    webpage += "request.send(null);";
-    webpage += "}";
-    webpage += "</script>";
+    webpage += "<script>\n";
+    webpage += "function GetSwitchState() {\n";
+    webpage += "nocache = \"&nocache=\" + Math.random() * 1000000;\n";
+    webpage += "var request = new XMLHttpRequest();\n";
+    webpage += "request.onreadystatechange = function() {\n";
+    webpage += "if (this.readyState == 4) {\n";
+    webpage += "if (this.status == 200) {\n";
+    webpage += "if (this.responseText != null) {\n";
+    webpage += "document.getElementById(\"switch_txt\").innerHTML = this.responseText;\n";
+    webpage += "}}}}\n";
+    webpage += "request.open(\"GET\", \"\\ajax_switch\" + nocache, true);\n";
+    webpage += "request.send(null);\n";
+    webpage += "}\n";
+    webpage += "</script>\n";
 
     //html code
     webpage += "<h1>Arduino AJAX Switch Status</h1>";
     webpage += "<button type=\"button\" onclick=\"GetSwitchState()\">Get Switch State</button>";
     webpage += "<p id=\"switch_txt\"> No Log for now...</p>";
 
-#endif
     append_webpage_footer();
     server.send(200, "text/html", webpage);
-#elif 0
-    server.send(200, "text/html", weblog);
-    weblog = "";
-#else
-
-    //get all logs
-    String str = "";
-    getLogAll(str);
-    server.send(200, "text/html", str.c_str());
-#endif
 }
 
 void web_setup(void) {
@@ -163,7 +147,7 @@ void web_setup(void) {
     server.on("/", HTTP_GET, handle_root);
     server.on("/update", HTTP_POST, handle_update_fn,  handle_update_ufn);
     server.on("/log", HTTP_GET, handle_log);
-    server.on("ajax_switch", HTTP_GET, handle_ajax_log);
+    server.on("/ajax_switch", HTTP_GET, handle_ajax_log);
 
     server.begin();
     MDNS.addService("http", "tcp", 80);

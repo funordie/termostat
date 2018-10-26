@@ -44,7 +44,7 @@ typedef struct SettingsStruct
         strlcpy(ntp_server[2], NTP_SERVER2, strlen(NTP_SERVER2));
         TimeZone = TIMEZONE;
         StructSize = sizeof(SettingsStruct);
-        logLevel = LOG_LEVEL_ALL;
+        logLevel = LOG_LEVEL_DEBUG;
         check_period = CHECK_PERIOD;
     }
 
