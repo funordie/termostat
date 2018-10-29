@@ -113,13 +113,17 @@ String GetBuildDateAndTime()
  *  "2017-03-07T11:08:02-07:00" - if DT_LOCAL and SetOption52 = 1
  *  "2017-03-07T11:08:02"       - otherwise
  */
-String GetDateAndTime()
+String GetDateAndTime(int mode)
 {
   // "2017-03-07T11:08:02-07:00" - ISO8601:2004
   char dt[27];
   TIME_T tmpTime;
 
-  BreakTime(utc_time, tmpTime);
+  uint32_t time_input;
+  if(mode == 0) time_input = utc_time;
+  else time_input = local_time;
+
+  BreakTime(time_input, tmpTime);
   tmpTime.year += 1970;
 
   snprintf_P(dt, sizeof(dt), PSTR("%04d-%02d-%02dT%02d:%02d:%02d"),

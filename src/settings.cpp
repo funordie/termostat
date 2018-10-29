@@ -6,6 +6,7 @@
 #include "FS.h"
 
 #include <settings.hpp>
+#include <rtc.hpp>
 
 #include <common.hpp>
 
@@ -102,6 +103,7 @@ int LoadSettings()
 
 void settings_setup() {
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    RtcInit();
 }
 
 void settings_loop() {

@@ -18,6 +18,20 @@ static int   termostat_mode;
 uint32_t uptime;
 Settings_t Settings;
 
+extern struct TIME_T {
+  uint8_t       second;
+  uint8_t       minute;
+  uint8_t       hour;
+  uint8_t       day_of_week;               // sunday is day 1
+  uint8_t       day_of_month;
+  uint8_t       month;
+  char          name_of_month[4];
+  uint16_t      day_of_year;
+  uint16_t      year;
+  unsigned long days;
+  unsigned long valid;
+} RtcTime;
+
 void TermostatRun() {
     int res;
 
@@ -71,7 +85,8 @@ void TermostatRun() {
     res = oled_print(0, 10, String("Temperature SP: ") + String(temperature_setpoint));
     res = oled_print(0, 20, String("Mode: ") + String(termostat_mode));
     res = oled_print(0, 30, String("Status: ") + String(termostat_status));
-    res = oled_print(0, 30, String("Time: ") + GetDateAndTime());
+    res = oled_print(0, 40, GetDateAndTime(1).c_str());
+//    addToLog(LOG_LEVEL_DEBUG, "Termostat RtcTime: %s\n", GetDateAndTime(1).c_str());
     oled_display();
 }
 //The setup function is called once at startup of the sketch
