@@ -293,7 +293,7 @@ boolean MidnightNow()
 
 void RtcSecond()
 {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
 
   TIME_T tmpTime;
 
@@ -309,7 +309,7 @@ void RtcSecond()
       }
       BreakTime(utc_time, tmpTime);
       RtcTime.year = tmpTime.year + 1970;
-      addToLog(LOG_LEVEL_DEBUG, "(" D_UTC_TIME ") %s", GetTime().c_str());
+      addToLog(LOG_LEVEL_DEBUG, "(" D_UTC_TIME ") %s\n", GetTime().c_str());
     } else {
       ntp_sync_minute++;  // Try again in next minute
     }

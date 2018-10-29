@@ -102,42 +102,53 @@ void GetSwitchState()
 
 void handle_ajax_log() {
     addToLog(LOG_LEVEL_ERROR, "%s: enter\n", __FUNCTION__);
-
+#if 0
     // read switch state and send appropriate paragraph text
     GetSwitchState();
+#else
+    String str;
+    getLogAll(str);
+    server.send(200, "text/html", str);
+#endif
 }
 
 void handle_log() {
 
-    append_webpage_header();
-
+    webpage = "";
+    webpage.concat("<!DOCTYPE html><html lang=\"en\"><head><title>esp web server</title>\n");
     //javascript
-    webpage += "<script>\n";
-    webpage += "function GetSwitchState() {\n";
-    webpage += "nocache = \"&nocache=\" + Math.random() * 1000000;\n";
-    webpage += "var request = new XMLHttpRequest();\n";
-    webpage += "request.onreadystatechange = function() {\n";
-    webpage += "if (this.readyState == 4) {\n";
-    webpage += "if (this.status == 200) {\n";
-    webpage += "if (this.responseText != null) {\n";
-    webpage += "document.getElementById(\"switch_txt\").innerHTML = this.responseText;\n";
-    webpage += "}}}}\n";
-    webpage += "request.open(\"GET\", \"\\ajax_switch\" + nocache, true);\n";
-    webpage += "request.send(null);\n";
-    webpage += "}\n";
-    webpage += "</script>\n";
+    webpage.concat("<script>\n");
+    webpage.concat("function GetSwitchState() {\n");
+#if 0
+    webpage.concat(      "nocache = \"&nocache=\" + Math.random() * 1000000;\n");
+#endif
+    webpage.concat(      "var request = new XMLHttpRequest();\n");
+    webpage.concat(      "request.onreadystatechange = function() {\n");
+    webpage.concat(          "if (this.readyState == 4 && this.status == 200 && this.responseText != null) {\n");
+    webpage.concat(          "document.getElementById(\"switch_txt\").innerHTML = this.responseText;\n");
+    webpage.concat(          "}\n");
+    webpage.concat(      "}\n");
+#if 0
+    webpage.concat(      "request.open(\"GET\", \"ajax_switch\" + nocache, true);\n");
+#else
+    webpage.concat(      "request.open(\"GET\", \"ajax_switch\", true);\n");
+#endif
+    webpage.concat(      "request.send(null);\n");
+    webpage.concat(  "}\n");
+    webpage.concat(  "</script>\n");
 
+    webpage.concat( "</head><body>\n");
     //html code
-    webpage += "<h1>Arduino AJAX Switch Status</h1>";
-    webpage += "<button type=\"button\" onclick=\"GetSwitchState()\">Get Switch State</button>";
-    webpage += "<p id=\"switch_txt\"> No Log for now...</p>";
+    webpage.concat(  "<h1>Arduino AJAX Switch Status</h1>\n");
+    webpage.concat(  "<button type=\"button\" onclick=\"GetSwitchState()\">Get Switch State</button>\n");
+    webpage.concat(  "<p id=\"switch_txt\"> No Log for now...</p>\n");
 
     append_webpage_footer();
     server.send(200, "text/html", webpage);
 }
 
 void web_setup(void) {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
     while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
         delay(250);
         addToLog(LOG_LEVEL_ERROR, '.');
@@ -155,15 +166,15 @@ void web_setup(void) {
     addToLog(LOG_LEVEL_ERROR, "Ready! Open http://%s.local in your browser\n", host);
 
     configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
-    addToLog(LOG_LEVEL_ERROR, "\nWaiting for time");
+    addToLog(LOG_LEVEL_ERROR, "\nWaiting for time\n");
     while (!time(nullptr)) {
-        addToLog(LOG_LEVEL_ERROR, "config time error");
+        addToLog(LOG_LEVEL_ERROR, "config time error\n");
       delay(1000);
     }
-    addToLog(LOG_LEVEL_ERROR, "config time ok");
+    addToLog(LOG_LEVEL_ERROR, "config time ok\n");
 }
 
 void web_loop(void) {
     server.handleClient();
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
 }

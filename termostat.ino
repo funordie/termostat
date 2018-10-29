@@ -35,7 +35,7 @@ extern struct TIME_T {
 void TermostatRun() {
     int res;
     String status;
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
 
 #ifdef _USE_EXTERNAL_TEMPERATURE_
     res = mqtt_get_temperature(&temperature);
@@ -47,11 +47,11 @@ void TermostatRun() {
         goto ERROR_1;
     }
 
-    addToLog(LOG_LEVEL_DEBUG, "process temperature: %f", temperature);
+    addToLog(LOG_LEVEL_DEBUG, "process temperature: %f\n", temperature);
 
     res = mqtt_publish_temperature(temperature);
     if(res) {
-        addToLog(LOG_LEVEL_ERROR, "sent temperature error !!!");
+        addToLog(LOG_LEVEL_ERROR, "sent temperature error !!!\n");
     }
 
     res = mqtt_get_setpoint(&temperature_setpoint);
@@ -60,7 +60,7 @@ void TermostatRun() {
         goto ERROR_1;
     }
 
-    addToLog(LOG_LEVEL_DEBUG, "process setpoint: %f", temperature_setpoint);
+    addToLog(LOG_LEVEL_DEBUG, "process setpoint: %f\n", temperature_setpoint);
 
     res = mqtt_get_mode(&termostat_mode);
     if(res) {
@@ -68,7 +68,7 @@ void TermostatRun() {
         goto ERROR_1;
     }
 
-    addToLog(LOG_LEVEL_DEBUG, "process mode: %d", termostat_mode);
+    addToLog(LOG_LEVEL_DEBUG, "process mode: %d\n", termostat_mode);
 
     if(temperature + DB > temperature_setpoint) {
         termostat_status = 0;
@@ -82,37 +82,68 @@ void TermostatRun() {
     res = oled_print(0, 10, String("Temperature SP: ") + String(temperature_setpoint));
     res = oled_print(0, 20, String("Mode: ") + String(termostat_mode));
     res = oled_print(0, 30, String("Status: ") + String(termostat_status));
-
-//    addToLog(LOG_LEVEL_DEBUG, "Termostat RtcTime: %s\n", GetDateAndTime(1).c_str());
+    res = oled_print(0, 40, GetDateAndTime(1));
     oled_display();
 
+    return;
+
 ERROR_1:
-    addToLog(LOG_LEVEL_ERROR, "%s: error: status:%s", __FUNCTION__, status.c_str());
+    addToLog(LOG_LEVEL_ERROR, "%s: error: %s\n", __FUNCTION__, status.c_str());
     oled_clear();
-    res = oled_print(0, 0, String("Error:") + status);
+    res = oled_print(0, 0, status);
     res = oled_print(0, 40, GetDateAndTime(1).c_str());
+    oled_display();
 }
 
 //The setup function is called once at startup of the sketch
 void setup() {
     Serial.begin(115200);
 
-    wifi_setup();
-	mqtt_setup();
-    tempetarure_setup();
     oled_setup();
+
+    oled_clear();
+    oled_print(0, 0, "Setup WIFI");
+    oled_display();
+
+    wifi_setup();
+
+    oled_clear();
+    oled_print(0, 0, "Setup MQTT");
+    oled_display();
+
+	mqtt_setup();
+
+    oled_clear();
+    oled_print(0, 0, "Setup Temperature");
+    oled_display();
+
+    tempetarure_setup();
+
+    oled_clear();
+    oled_print(0, 0, "Setup WEB");
+    oled_display();
+
     web_setup();
+
+    oled_clear();
+    oled_print(0, 0, "Setup SETTINGS");
+    oled_display();
+
     settings_setup();
+
+    oled_clear();
+    oled_print(0, 0, "Setup DONE");
+    oled_display();
 
     //TODO: check all modules
     termostat_status = 0;
 }
 
 void PerformEverySecond() {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
 
-    static int tele_period = 0;                        // Tele period timer
-    static int check_period = 0;                       // Check period timer
+    static int tele_period = Settings.tele_period;                        // Tele period timer
+    static int check_period = Settings.check_period;                       // Check period timer
 
     uptime++;
 
@@ -129,16 +160,16 @@ void PerformEverySecond() {
     check_period++;
 
     //check for termostat status
-    if(termostat_status != -1) {
+    if(termostat_status == -1) {
         //termostat is loading
         static int load_count = 0;
-        if(load_count == 0) {
-            String str = "loading: " + String(load_count) + String(" seconds");
-            oled_clear();
-            oled_print(0, 0, str);
-            oled_display();
-            addToLog(LOG_LEVEL_DEBUG, "%s\n", str.c_str());
-        }
+
+        String str = "loading: " + String(load_count) + String(" seconds");
+        oled_clear();
+        oled_print(0, 0, str);
+        oled_display();
+        addToLog(LOG_LEVEL_DEBUG, "%s\n", str.c_str());
+
         load_count++;
     }
     else {
@@ -190,6 +221,8 @@ void Every250mSeconds() {
 // The loop function is called in an endless loop
 void loop() {
     //TODO: alive message
+    static uint32_t count = 0;
+    addToLog(LOG_LEVEL_DEBUG_MORE, "loop\n", count++);
 
     static unsigned long state_50msecond = 0;          // State 50msecond timer
     static unsigned long state_100msecond = 0;         // State 100msecond timer
@@ -217,5 +250,5 @@ void loop() {
     web_loop();
     settings_loop();
 
-//    addToLog(LOG_LEVEL_ERROR, "\n\n\n");
+    addToLog(LOG_LEVEL_DEBUG_MORE, "\n\n\n");
 }

@@ -223,7 +223,6 @@ struct LogStruct {
       timestamp = timeStamp[read_idx];
       String output = logjson_formatLine(read_idx);
       if (isEmpty()) return output;
-      output += ",\n";
       logLinesAvailable = true;
       return output;
     }
@@ -247,9 +246,9 @@ private:
       output.reserve(LOG_STRUCT_MESSAGE_SIZE + 64);
       output = "{";
       output += to_json_object_value("timestamp", String(timeStamp[index]));
-      output += ",\n";
+      output += " ";
       output += to_json_object_value("text",  Message[index]);
-      output += ",\n";
+      output += " ";
       output += to_json_object_value("level", String(log_level[index]));
       output += "}";
       return output;
@@ -301,7 +300,6 @@ size_t addToLog(byte logLevel, const char *format, ...)
         buffer[len + 1] = 0;
 
         //serial log
-//        len = Serial.write((const uint8_t*) buffer, len);
         len = Serial.write((const uint8_t*) buffer, len);
 
         //web log
@@ -328,6 +326,6 @@ void getLogAll(String& str) {
 
         String tmp = getLog(logLinesAvailable);
         Serial.printf("%s: getLog return %s\n", __FUNCTION__, tmp.c_str());
-        str += tmp + "\n";
+        str += tmp;
     }while(logLinesAvailable);
 }

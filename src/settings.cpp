@@ -33,7 +33,7 @@ void fileSystemCheck()
         log=log+fs_info.usedBytes;
         log=log+F(" bytes of ");
         log=log+fs_info.totalBytes;
-        addToLog(LOG_LEVEL_INFO, log);
+        addToLog(LOG_LEVEL_INFO, log + "\n");
 
         fs::File f = SPIFFS.open(FILE_CONFIG, "r");
         if (!f)
@@ -45,7 +45,7 @@ void fileSystemCheck()
     else
     {
         String log = F("FS   : Mount failed");
-        addToLog(LOG_LEVEL_ERROR, "log:%s", log.c_str());
+        addToLog(LOG_LEVEL_ERROR, "log:%s\n", log.c_str());
         //			ResetFactory();
     }
 }
@@ -66,7 +66,7 @@ size_t SaveSettings(void)
     {
         res = f.write((const uint8_t *)&Settings, sizeof(struct SettingsStruct));
         if(!res) {
-            addToLog(LOG_LEVEL_ERROR,"write config file error");
+            addToLog(LOG_LEVEL_ERROR,"write config file error\n");
         }
     }
     f.close();
@@ -85,7 +85,7 @@ int LoadSettings()
     {
         res = f.read((uint8_t *)&Settings, sizeof(struct SettingsStruct));
         if(!res) {
-            addToLog(LOG_LEVEL_ERROR,"read config file error");
+            addToLog(LOG_LEVEL_ERROR,"read config file error\n");
         }
     }
     f.close();
@@ -95,10 +95,10 @@ int LoadSettings()
 }
 
 void settings_setup() {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
     RtcInit();
 }
 
 void settings_loop() {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
 }

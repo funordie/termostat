@@ -10,7 +10,7 @@
 
 void wifi_setup() {
 
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
 	pinMode(TRIGGER_PIN, INPUT);
 
 	//WiFiManager
@@ -31,7 +31,7 @@ void wifi_setup() {
 		//WiFi.mode(WIFI_STA);
 
 		if (!wifiManager.startConfigPortal("IP_AP", "IP_AP_PASS")) {
-		    addToLog(LOG_LEVEL_ERROR, "failed to connect and hit timeout");
+		    addToLog(LOG_LEVEL_ERROR, "failed to connect and hit timeout\n");
 			delay(3000);
 			//reset and try again, or maybe put it to deep sleep
 			ESP.reset();
@@ -39,20 +39,20 @@ void wifi_setup() {
 		}
 
 		//if you get here you have connected to the WiFi
-		addToLog(LOG_LEVEL_ERROR, "connected...yeey :)");
+		addToLog(LOG_LEVEL_ERROR, "connected...yeey :)\n");
 	}
 	else {
 		wifiManager.setTimeout(120);
 		int count = 0;
 		while(!wifiManager.autoConnect() && count < 3) {
-		    addToLog(LOG_LEVEL_ERROR, "failed to connect and hit timeout");
+		    addToLog(LOG_LEVEL_ERROR, "failed to connect and hit timeout\n");
 			delay(5000);
 			count++;
 		};
 	}
-	addToLog(LOG_LEVEL_ERROR, "WiFi connected: %s %s", WiFi.localIP().toString().c_str(), WiFi.SSID().c_str());
+	addToLog(LOG_LEVEL_ERROR, "WiFi connected: %s %s\n", WiFi.localIP().toString().c_str(), WiFi.SSID().c_str());
 }
 
 void wifi_check() {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
 }

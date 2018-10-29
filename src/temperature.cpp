@@ -20,7 +20,7 @@ static float temperature;
 static int __status_error = 1; //1 - error; 0 - OK
 
 void tempetarure_setup() {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
 	sensors.begin();
 }
 

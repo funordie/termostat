@@ -84,13 +84,15 @@ void mqtt_setup() {
 
 void callback(char* topic, byte* payload, unsigned int length) {
     addToLog(LOG_LEVEL_ERROR, "Message arrived [%s] ", topic);
+    String str;
 	for (unsigned int i=0;i<length;i++) {
 	    addToLog(LOG_LEVEL_ERROR, "%c", (char)payload[i]);
+	    str.concat((char)payload[i]);
 	}
 	addToLog(LOG_LEVEL_ERROR, "\n");
 
 	if(!strcmp(topic, topic_sp.c_str())) {
-	    float value = String((char*)payload).toFloat();  //atof((char*)payload);
+	    float value = str.toFloat();
 	    addToLog(LOG_LEVEL_ERROR, "receive Temperature Set point float: %f\n", value);
 		temperature_setpoint = value;
 	}
