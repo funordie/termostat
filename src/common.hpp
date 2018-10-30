@@ -11,6 +11,7 @@
 #include <Arduino.h>
 #include <Log.hpp>
 
+#include "oled.hpp"
 #include "gpio.hpp"
 
 enum LoggingLevels {LOG_LEVEL_NONE, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_DEBUG, LOG_LEVEL_DEBUG_MORE, LOG_LEVEL_ALL};

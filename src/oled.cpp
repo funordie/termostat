@@ -18,6 +18,11 @@ void oled_setup() {
 
 	display.flipScreenVertically();
 	display.setFont(ArialMT_Plain_10);
+
+	//startup message
+	display.clear();
+	display.drawString(0, 0, String("Starting ..."));
+	display.display();
 }
 
 void oled_loop() {

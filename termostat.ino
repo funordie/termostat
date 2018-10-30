@@ -94,8 +94,7 @@ ERROR_1:
 }
 
 //The setup function is called once at startup of the sketch
-void setup()
-{
+void setup() {
     Serial.begin(115200);
 
     wifi_setup();
@@ -106,8 +105,7 @@ void setup()
     settings_setup();
 }
 
-void PerformEverySecond()
-{
+void PerformEverySecond() {
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 
     static int tele_period = 0;                        // Tele period timer
@@ -129,7 +127,6 @@ void PerformEverySecond()
 
     //every second
     TermostatRun();
-    oled_loop();
 }
 
 /*********************************************************************************************\
@@ -139,8 +136,7 @@ void PerformEverySecond()
  * Every 0.1 second
 \*-------------------------------------------------------------------------------------------*/
 
-void Every100mSeconds()
-{
+void Every100mSeconds() {
   // As the max amount of sleep = 250 mSec this loop will shift in time...
 }
 
@@ -148,8 +144,7 @@ void Every100mSeconds()
  * Every 0.25 second
 \*-------------------------------------------------------------------------------------------*/
 
-void Every250mSeconds()
-{
+void Every250mSeconds() {
 // As the max amount of sleep = 250 mSec this loop should always be taken...
 
   static uint8_t state_250mS = 0;                    // State 250msecond per second flag
@@ -175,8 +170,7 @@ void Every250mSeconds()
 }
 
 // The loop function is called in an endless loop
-void loop()
-{
+void loop() {
     //TODO: alive message
 
     static unsigned long state_50msecond = 0;          // State 50msecond timer
