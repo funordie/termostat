@@ -17,6 +17,7 @@ OneWire oneWire(DS18b20_PIN);
 DallasTemperature sensors(&oneWire);
 
 static float temperature;
+static int __status_error = 1; //1 - error; 0 - OK
 
 void tempetarure_setup() {
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
@@ -31,12 +32,17 @@ void temperature_loop() {
 	// After we got the temperatures, we can print them here.
 	// We use the function ByIndex, and as an example get the temperature from the first sensor only.
 	temperature = sensors.getTempCByIndex(0);
+
+	if(temperature == DEVICE_DISCONNECTED_C) __status_error = 1;
+	else __status_error = 0;
 }
 
 int temperature_get_temperature(float * fTemp) {
 
+    if(__status_error) {
+        //try to read temperature
+        temperature_loop();
+    }
 	*fTemp = temperature;
-
-	//TODO: check for errors
-	return 0;
+	return __status_error;
 }

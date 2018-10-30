@@ -34,7 +34,7 @@ extern struct TIME_T {
 
 void TermostatRun() {
     int res;
-
+    String status;
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 
 #ifdef _USE_EXTERNAL_TEMPERATURE_
@@ -43,12 +43,11 @@ void TermostatRun() {
     res = temperature_get_temperature(&temperature);
 #endif
     if(res) {
-        addToLog(LOG_LEVEL_ERROR, "read temperature error!!!!");
-        return;
+        status = "read temperature error!!!!";
+        goto ERROR_1;
     }
-//    else {
-//      addToLog(LOG_LEVEL_ERROR, "process temperature: %f", temperature);
-//    }
+
+    addToLog(LOG_LEVEL_DEBUG, "process temperature: %f", temperature);
 
     res = mqtt_publish_temperature(temperature);
     if(res) {
@@ -57,21 +56,19 @@ void TermostatRun() {
 
     res = mqtt_get_setpoint(&temperature_setpoint);
     if(res) {
-        addToLog(LOG_LEVEL_ERROR, "get setpoint error !!!");
-        return;
+        status = "get setpoint error !!!";
+        goto ERROR_1;
     }
-//    else {
-//      addToLog(LOG_LEVEL_ERROR, "process setpoint: %f", temperature_setpoint);
-//    }
+
+    addToLog(LOG_LEVEL_DEBUG, "process setpoint: %f", temperature_setpoint);
 
     res = mqtt_get_mode(&termostat_mode);
     if(res) {
-        addToLog(LOG_LEVEL_ERROR, "get mode error !!!");
-        return;
+        status = "get mode error !!!";
+        goto ERROR_1;
     }
-//    else {
-//      addToLog(LOG_LEVEL_ERROR, "process mode: %d", termostat_mode);
-//    }
+
+    addToLog(LOG_LEVEL_DEBUG, "process mode: %d", termostat_mode);
 
     if(temperature + DB > temperature_setpoint) {
         termostat_status = 0;
@@ -85,10 +82,17 @@ void TermostatRun() {
     res = oled_print(0, 10, String("Temperature SP: ") + String(temperature_setpoint));
     res = oled_print(0, 20, String("Mode: ") + String(termostat_mode));
     res = oled_print(0, 30, String("Status: ") + String(termostat_status));
-    res = oled_print(0, 40, GetDateAndTime(1).c_str());
+
 //    addToLog(LOG_LEVEL_DEBUG, "Termostat RtcTime: %s\n", GetDateAndTime(1).c_str());
     oled_display();
+
+ERROR_1:
+    addToLog(LOG_LEVEL_ERROR, "%s: error: status:%s", __FUNCTION__, status.c_str());
+    oled_clear();
+    res = oled_print(0, 0, String("Error:") + status);
+    res = oled_print(0, 40, GetDateAndTime(1).c_str());
 }
+
 //The setup function is called once at startup of the sketch
 void setup()
 {
@@ -106,29 +110,22 @@ void PerformEverySecond()
 {
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 
-    static int tele_period = 1;                        // Tele period timer
-    static int check_period = 1;                       // Check period timer
+    static int tele_period = 0;                        // Tele period timer
+    static int check_period = 0;                       // Check period timer
 
     uptime++;
 
-    if (Settings.tele_period) {
-        tele_period++;
-        if (tele_period >= Settings.tele_period) {
-            tele_period = 0;
-
-            //run function
-            temperature_loop();
-        }
+    if (Settings.tele_period && (tele_period == Settings.tele_period)) {
+        tele_period = 0;
+        temperature_loop();
     }
-    if (Settings.check_period) {
-        check_period++;
-        if (check_period >= Settings.check_period) {
-            check_period = 0;
+    tele_period++;
 
-            //run function
-            wifi_check();
-        }
+    if (Settings.check_period && (check_period == Settings.check_period)) {
+        check_period = 0;
+        wifi_check();
     }
+    check_period++;
 
     //every second
     TermostatRun();
@@ -157,9 +154,6 @@ void Every250mSeconds()
 
   static uint8_t state_250mS = 0;                    // State 250msecond per second flag
 
-  state_250mS++;
-  state_250mS &= 0x3;
-
 /*-------------------------------------------------------------------------------------------*\
  * Every second at 0.25 second interval
 \*-------------------------------------------------------------------------------------------*/
@@ -175,6 +169,9 @@ void Every250mSeconds()
   case 3:                                                 // Every x.75 second
     break;
   }
+
+  state_250mS++;
+  state_250mS &= 0x3;
 }
 
 // The loop function is called in an endless loop
