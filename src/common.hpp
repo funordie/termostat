@@ -14,7 +14,14 @@
 #include "oled.hpp"
 #include "gpio.hpp"
 
-enum LoggingLevels {LOG_LEVEL_NONE, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_DEBUG, LOG_LEVEL_DEBUG_MORE, LOG_LEVEL_ALL};
+enum LoggingLevels {
+    LOG_LEVEL_NONE,
+    LOG_LEVEL_ERROR,
+    LOG_LEVEL_INFO,
+    LOG_LEVEL_DEBUG,
+    LOG_LEVEL_DEBUG_MORE,
+    LOG_LEVEL_ALL
+};
 
 // -- Time - Up to three NTP servers in your region
 #define NTP_SERVER0            "pool.ntp.org"       /* [NtpServer1] Select first NTP server by name or IP address (129.250.35.250)*/
@@ -45,7 +52,7 @@ typedef struct SettingsStruct
         strlcpy(ntp_server[2], NTP_SERVER2, strlen(NTP_SERVER2));
         TimeZone = TIMEZONE;
         StructSize = sizeof(SettingsStruct);
-        logLevel = LOG_LEVEL_DEBUG;
+        logLevel = LOG_LEVEL_INFO;
         check_period = CHECK_PERIOD;
     }
 

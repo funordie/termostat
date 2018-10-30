@@ -12,7 +12,7 @@
 #define DB 0.5f
 static float temperature;
 static float temperature_setpoint;
-static int   termostat_status;
+static int   termostat_status = -1;
 static int   termostat_mode;
 
 uint32_t uptime;
@@ -103,6 +103,9 @@ void setup() {
     oled_setup();
     web_setup();
     settings_setup();
+
+    //TODO: check all modules
+    termostat_status = 0;
 }
 
 void PerformEverySecond() {
@@ -125,8 +128,23 @@ void PerformEverySecond() {
     }
     check_period++;
 
-    //every second
-    TermostatRun();
+    //check for termostat status
+    if(termostat_status != -1) {
+        //termostat is loading
+        static int load_count = 0;
+        if(load_count == 0) {
+            String str = "loading: " + String(load_count) + String(" seconds");
+            oled_clear();
+            oled_print(0, 0, str);
+            oled_display();
+            addToLog(LOG_LEVEL_DEBUG, "%s\n", str.c_str());
+        }
+        load_count++;
+    }
+    else {
+        //termostat is running
+        TermostatRun();
+    }
 }
 
 /*********************************************************************************************\
