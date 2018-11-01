@@ -69,7 +69,7 @@ void handle_update_ufn() {
     if (upload.status == UPLOAD_FILE_START) {
         Serial.setDebugOutput(true);
         WiFiUDP::stopAll();
-        addToLog(LOG_LEVEL_ERROR, "Update: %s\n", upload.filename.c_str());
+        addToLog(LOG_LEVEL_ERROR, "Update: %s", upload.filename.c_str());
         uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
         if (!Update.begin(maxSketchSpace)) { //start with max available size
             Update.printError(Serial);
@@ -80,7 +80,7 @@ void handle_update_ufn() {
         }
     } else if (upload.status == UPLOAD_FILE_END) {
         if (Update.end(true)) { //true to set the size to the current progress
-            addToLog(LOG_LEVEL_ERROR, "Update Success: %u\nRebooting...\n", upload.totalSize);
+            addToLog(LOG_LEVEL_ERROR, "Update Success: %u\nRebooting...", upload.totalSize);
         } else {
             Update.printError(Serial);
         }
@@ -101,7 +101,7 @@ void GetSwitchState()
 }
 
 void handle_ajax_log() {
-    addToLog(LOG_LEVEL_ERROR, "%s: enter\n", __FUNCTION__);
+    addToLog(LOG_LEVEL_ERROR, "%s: enter", __FUNCTION__);
 #if 0
     // read switch state and send appropriate paragraph text
     GetSwitchState();
@@ -115,43 +115,43 @@ void handle_ajax_log() {
 void handle_log() {
 
     webpage = "";
-    webpage.concat("<!DOCTYPE html><html lang=\"en\"><head><title>esp web server</title>\n");
+    webpage.concat("<!DOCTYPE html><html lang=\"en\"><head><title>esp web server</title>");
     //javascript
-    webpage.concat("<script>\n");
-    webpage.concat("function GetSwitchState() {\n");
+    webpage.concat("<script>");
+    webpage.concat("function GetSwitchState() {");
 #if 0
-    webpage.concat(      "nocache = \"&nocache=\" + Math.random() * 1000000;\n");
+    webpage.concat(      "nocache = \"&nocache=\" + Math.random() * 1000000;");
 #endif
-    webpage.concat(      "var request = new XMLHttpRequest();\n");
-    webpage.concat(      "request.onreadystatechange = function() {\n");
-    webpage.concat(          "if (this.readyState == 4 && this.status == 200 && this.responseText != null) {\n");
-    webpage.concat(          "document.getElementById(\"switch_txt\").innerHTML = this.responseText;\n");
-    webpage.concat(          "}\n");
-    webpage.concat(      "}\n");
+    webpage.concat(      "var request = new XMLHttpRequest();");
+    webpage.concat(      "request.onreadystatechange = function() {");
+    webpage.concat(          "if (this.readyState == 4 && this.status == 200 && this.responseText != null) {");
+    webpage.concat(          "document.getElementById(\"switch_txt\").innerHTML = this.responseText;");
+    webpage.concat(          "}");
+    webpage.concat(      "}");
 #if 0
-    webpage.concat(      "request.open(\"GET\", \"ajax_switch\" + nocache, true);\n");
+    webpage.concat(      "request.open(\"GET\", \"ajax_switch\" + nocache, true);");
 #else
-    webpage.concat(      "request.open(\"GET\", \"ajax_switch\", true);\n");
+    webpage.concat(      "request.open(\"GET\", \"ajax_switch\", true);");
 #endif
-    webpage.concat(      "request.send(null);\n");
-    webpage.concat(  "}\n");
-    webpage.concat(  "</script>\n");
+    webpage.concat(      "request.send(null);");
+    webpage.concat(  "}");
+    webpage.concat(  "</script>");
 
-    webpage.concat( "</head><body>\n");
+    webpage.concat( "</head><body>");
     //html code
-    webpage.concat(  "<h1>Arduino AJAX Switch Status</h1>\n");
-    webpage.concat(  "<button type=\"button\" onclick=\"GetSwitchState()\">Get Switch State</button>\n");
-    webpage.concat(  "<p id=\"switch_txt\"> No Log for now...</p>\n");
+    webpage.concat(  "<h1>Arduino AJAX Switch Status</h1>");
+    webpage.concat(  "<button type=\"button\" onclick=\"GetSwitchState()\">Get Switch State</button>");
+    webpage.concat(  "<p id=\"switch_txt\"> No Log for now...</p>");
 
     append_webpage_footer();
     server.send(200, "text/html", webpage);
 }
 
 void web_setup(void) {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
     while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
         delay(250);
-        addToLog(LOG_LEVEL_ERROR, '.');
+        addToLogEx(LOG_LEVEL_ERROR, '.');
     }
 
     MDNS.begin(host);
@@ -163,18 +163,18 @@ void web_setup(void) {
     server.begin();
     MDNS.addService("http", "tcp", 80);
 
-    addToLog(LOG_LEVEL_ERROR, "Ready! Open http://%s.local in your browser\n", host);
+    addToLog(LOG_LEVEL_ERROR, "Ready! Open http://%s.local in your browser", host);
 
     configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
-    addToLog(LOG_LEVEL_ERROR, "\nWaiting for time\n");
+    addToLog(LOG_LEVEL_ERROR, "\nWaiting for time");
     while (!time(nullptr)) {
-        addToLog(LOG_LEVEL_ERROR, "config time error\n");
+        addToLog(LOG_LEVEL_ERROR, "config time error");
       delay(1000);
     }
-    addToLog(LOG_LEVEL_ERROR, "config time ok\n");
+    addToLog(LOG_LEVEL_ERROR, "config time ok");
 }
 
 void web_loop(void) {
     server.handleClient();
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 }

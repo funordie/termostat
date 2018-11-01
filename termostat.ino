@@ -35,7 +35,7 @@ extern struct TIME_T {
 void TermostatRun() {
     int res;
     String status;
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 
 #ifdef _USE_EXTERNAL_TEMPERATURE_
     res = mqtt_get_temperature(&temperature);
@@ -47,11 +47,11 @@ void TermostatRun() {
         goto ERROR_1;
     }
 
-    addToLog(LOG_LEVEL_DEBUG, "process temperature: %f\n", temperature);
+    addToLog(LOG_LEVEL_DEBUG, "process temperature: %f", temperature);
 
     res = mqtt_publish_temperature(temperature);
     if(res) {
-        addToLog(LOG_LEVEL_ERROR, "sent temperature error !!!\n");
+        addToLog(LOG_LEVEL_ERROR, "sent temperature error !!!");
     }
 
     res = mqtt_get_setpoint(&temperature_setpoint);
@@ -60,7 +60,7 @@ void TermostatRun() {
         goto ERROR_1;
     }
 
-    addToLog(LOG_LEVEL_DEBUG, "process setpoint: %f\n", temperature_setpoint);
+    addToLog(LOG_LEVEL_DEBUG, "process setpoint: %f", temperature_setpoint);
 
     res = mqtt_get_mode(&termostat_mode);
     if(res) {
@@ -68,7 +68,7 @@ void TermostatRun() {
         goto ERROR_1;
     }
 
-    addToLog(LOG_LEVEL_DEBUG, "process mode: %d\n", termostat_mode);
+    addToLog(LOG_LEVEL_DEBUG, "process mode: %d", termostat_mode);
 
     if(temperature + DB > temperature_setpoint) {
         termostat_status = 0;
@@ -88,7 +88,7 @@ void TermostatRun() {
     return;
 
 ERROR_1:
-    addToLog(LOG_LEVEL_ERROR, "%s: error: %s\n", __FUNCTION__, status.c_str());
+    addToLog(LOG_LEVEL_ERROR, "%s: error: %s", __FUNCTION__, status.c_str());
     oled_clear();
     res = oled_print(0, 0, status);
     res = oled_print(0, 40, GetDateAndTime(1).c_str());
@@ -140,7 +140,7 @@ void setup() {
 }
 
 void PerformEverySecond() {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 
     static int tele_period = Settings.tele_period;                        // Tele period timer
     static int check_period = Settings.check_period;                       // Check period timer
@@ -168,7 +168,7 @@ void PerformEverySecond() {
         oled_clear();
         oled_print(0, 0, str);
         oled_display();
-        addToLog(LOG_LEVEL_DEBUG, "%s\n", str.c_str());
+        addToLog(LOG_LEVEL_DEBUG, "%s", str.c_str());
 
         load_count++;
     }
@@ -222,7 +222,7 @@ void Every250mSeconds() {
 void loop() {
     //TODO: alive message
     static uint32_t count = 0;
-    addToLog(LOG_LEVEL_DEBUG_MORE, "loop\n", count++);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "loop", count++);
 
     static unsigned long state_50msecond = 0;          // State 50msecond timer
     static unsigned long state_100msecond = 0;         // State 100msecond timer
@@ -250,5 +250,7 @@ void loop() {
     web_loop();
     settings_loop();
 
-    addToLog(LOG_LEVEL_DEBUG_MORE, "\n\n\n");
+    addToLog(LOG_LEVEL_DEBUG_MORE, "");
+    addToLog(LOG_LEVEL_DEBUG_MORE, "");
+    addToLog(LOG_LEVEL_DEBUG_MORE, "");
 }

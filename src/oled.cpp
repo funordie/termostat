@@ -12,7 +12,7 @@
 static SSD1306Wire  display(0x3c, SSD1306_SDA, SSD1306_SCL);
 
 void oled_setup() {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 	// Initialising the UI will init the display too.
 	display.init();
 
@@ -21,7 +21,7 @@ void oled_setup() {
 }
 
 void oled_loop() {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter\n", __FUNCTION__);
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 }
 
 int oled_clear() {

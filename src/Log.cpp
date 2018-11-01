@@ -262,70 +262,105 @@ private:
 
 } Logging;
 
-void addToLog(byte loglevel, const String& string)
-{
-    addToLog(loglevel, string.c_str());
-}
-
-//void addToLog(byte logLevel, const __FlashStringHelper* flashString)
-//{
-//    String s(flashString);
-//    addToLog(logLevel, s.c_str());
-//}
-
-void addToLog(byte logLevel, const char ch)
-{
-    //weblog
-    Logging.add(logLevel, String(ch).c_str());
-}
-
-size_t addToLog(byte logLevel, const char *format, ...)
+size_t __addToLog(byte logLevel, const char *buffer, bool new_line=1)
 {
     if(logLevel <= Settings.logLevel) {
-        va_list arg;
-        va_start(arg, format);
-        char temp[64];
-        char* buffer = temp;
-        size_t len = vsnprintf(temp, sizeof(temp), format, arg);
-        va_end(arg);
-        if (len > sizeof(temp) - 1) {
-            buffer = new char[len + 1];
-            if (!buffer) {
-                return 0;
-            }
-            va_start(arg, format);
-            vsnprintf(buffer, len + 1, format, arg);
-            va_end(arg);
-        }
-        buffer[len + 1] = 0;
+
+        uint32_t len = strlen(buffer);
 
         //serial log
         len = Serial.write((const uint8_t*) buffer, len);
+        if(new_line)
+            len = Serial.write("\n");
 
         //web log
         Logging.add(logLevel, buffer);
-
-        if (buffer != temp) {
-            delete[] buffer;
-        }
         return len;
     }
     return 0;
 }
 
-String getLog(bool& logLinesAvailable) {
-    unsigned long timestamp;
-    return Logging.get_logjson_formatted(logLinesAvailable, timestamp);
+void addToLog(byte loglevel, const String& string)
+{
+    __addToLog(loglevel, string.c_str());
+}
+
+void addToLog(byte logLevel, const char ch)
+{
+    __addToLog(logLevel, String(ch).c_str());
+}
+
+void addToLog(byte logLevel, const char *format, ...) {
+
+    va_list arg;
+    va_start(arg, format);
+    char temp[64];
+    char* buffer = temp;
+    size_t len = vsnprintf(temp, sizeof(temp), format, arg);
+    va_end(arg);
+    if (len > sizeof(temp) - 1) {
+        Serial.print("addToLog: allocate new buffer:");
+        Serial.print(len + 1);
+        Serial.println("bytes");
+        buffer = new char[len + 1];
+        if (!buffer) {
+            return;
+        }
+        va_start(arg, format);
+        vsnprintf(buffer, len + 1, format, arg);
+        va_end(arg);
+    }
+
+    __addToLog(logLevel, buffer);
+
+    if(buffer != temp)
+        free (buffer);
+}
+
+void addToLogEx(byte loglevel, const String& string)
+{
+    __addToLog(loglevel, string.c_str(), 0);
+}
+
+void addToLogEx(byte logLevel, const char ch)
+{
+    __addToLog(logLevel, String(ch).c_str(), 0);
+}
+
+void addToLogEx(byte logLevel, const char *format, ...) {
+
+    va_list arg;
+    va_start(arg, format);
+    char temp[64];
+    char* buffer = temp;
+    size_t len = vsnprintf(temp, sizeof(temp), format, arg);
+    va_end(arg);
+    if (len > sizeof(temp) - 1) {
+        Serial.print("addToLog: allocate new buffer:");
+        Serial.print(len + 1);
+        Serial.println("bytes");
+        buffer = new char[len + 1];
+        if (!buffer) {
+            return;
+        }
+        va_start(arg, format);
+        vsnprintf(buffer, len + 1, format, arg);
+        va_end(arg);
+    }
+
+    __addToLog(logLevel, buffer, 0);
+
+    if(buffer != temp)
+        free (buffer);
 }
 
 void getLogAll(String& str) {
     str = "";
-    Serial.printf("%s: start\n", __FUNCTION__);
     bool logLinesAvailable;
+    unsigned long timestamp;
     do{
-
-        String tmp = getLog(logLinesAvailable);
-        Serial.printf("%s: getLog return %s\n", __FUNCTION__, tmp.c_str());
+        String tmp = Logging.get_logjson_formatted(logLinesAvailable, timestamp);
         str += tmp;
+        Serial.printf("%s: %s", __FUNCTION__, tmp.c_str());
     }while(logLinesAvailable);
 }
