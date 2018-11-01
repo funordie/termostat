@@ -164,14 +164,6 @@ void web_setup(void) {
     MDNS.addService("http", "tcp", 80);
 
     addToLog(LOG_LEVEL_ERROR, "Ready! Open http://%s.local in your browser", host);
-
-    configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
-    addToLog(LOG_LEVEL_ERROR, "\nWaiting for time");
-    while (!time(nullptr)) {
-        addToLog(LOG_LEVEL_ERROR, "config time error");
-      delay(1000);
-    }
-    addToLog(LOG_LEVEL_ERROR, "config time ok");
 }
 
 void web_loop(void) {

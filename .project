@@ -72,6 +72,11 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/ESP8266mDNS</locationURI>
 		</link>
 		<link>
+			<name>libraries/NtpClientLib</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/NtpClientLib/2.5.1</locationURI>
+		</link>
+		<link>
 			<name>libraries/OneWire</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/OneWire/2.3.4</locationURI>
@@ -90,6 +95,11 @@
 			<name>libraries/Ticker</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/Ticker</locationURI>
+		</link>
+		<link>
+			<name>libraries/Time</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/Time/1.5.0</locationURI>
 		</link>
 		<link>
 			<name>libraries/WiFiManager</name>

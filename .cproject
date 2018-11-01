@@ -34,6 +34,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266_and_ESP32_Oled_Driver_for_SSD1306_display/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/NtpClientLib/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Time}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.2006797259" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -54,6 +56,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266_and_ESP32_Oled_Driver_for_SSD1306_display/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/NtpClientLib/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Time}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1670267919" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -74,6 +78,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/ESP8266_and_ESP32_Oled_Driver_for_SSD1306_display/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/NtpClientLib/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Time}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.618974897" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>

@@ -11,7 +11,7 @@
 #include <common.hpp>
 
 void RtcInit();
-String GetDateAndTime(int mode);
+String GetDateAndTime();
 String GetTime();
 
 #endif /* SRC_RTC_HPP_ */

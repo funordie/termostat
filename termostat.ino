@@ -82,7 +82,7 @@ void TermostatRun() {
     res = oled_print(0, 10, String("Temperature SP: ") + String(temperature_setpoint));
     res = oled_print(0, 20, String("Mode: ") + String(termostat_mode));
     res = oled_print(0, 30, String("Status: ") + String(termostat_status));
-    res = oled_print(0, 40, GetDateAndTime(1));
+    res = oled_print(0, 40, GetDateAndTime());
     oled_display();
 
     return;
@@ -91,7 +91,7 @@ ERROR_1:
     addToLog(LOG_LEVEL_ERROR, "%s: error: %s", __FUNCTION__, status.c_str());
     oled_clear();
     res = oled_print(0, 0, status);
-    res = oled_print(0, 40, GetDateAndTime(1).c_str());
+    res = oled_print(0, 40, GetDateAndTime());
     oled_display();
 }
 
