@@ -77,30 +77,47 @@ void mqtt_setup() {
 	client.setCallback(callback);
 
 	if (!client.connected()) {
-		reconnect();
+        if (client.connect("arduinoClient"))
+          addToLog(LOG_LEVEL_INFO, "mqtt: connected");
 	}
+    else {
+        addToLog(LOG_LEVEL_INFO, "mqtt: already connected");
+    }
+
 	mqtt_subscribe();
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-    addToLog(LOG_LEVEL_ERROR, "Message arrived [%s] ", topic);
-    String str;
-	for (unsigned int i=0;i<length;i++) {
-	    addToLogEx(LOG_LEVEL_ERROR, "%c", (char)payload[i]);
-	    str.concat((char)payload[i]);
+    addToLog(LOG_LEVEL_DEBUG, "Message arrived [%s] ", topic);
+
+    //payload array, do not have terminating character.
+    //Allocate new string with size "length + 1"
+    char * buffer = NULL;
+    buffer = new char[length + 1];
+    if(!buffer) {
+        addToLog(LOG_LEVEL_ERROR, "mqtt: cannot allocate payload buffer");
+        return;
+    }
+    strncpy(buffer, (char*)payload, length);
+    buffer[length + 1] = 0;
+
+ 	for (unsigned int i=0;i<length;i++) {
+	    addToLogEx(LOG_LEVEL_DEBUG, "%c", (char)buffer[i]);
 	}
-	addToLog(LOG_LEVEL_ERROR, "");
+	addToLog(LOG_LEVEL_DEBUG, "");
 
 	if(!strcmp(topic, topic_sp.c_str())) {
-	    float value = str.toFloat();
-	    addToLog(LOG_LEVEL_ERROR, "receive Temperature Set point float: %f", value);
+	    float value = String(buffer).toFloat();
+	    addToLog(LOG_LEVEL_DEBUG, "receive Temperature Set point float: %f", value);
 		temperature_setpoint = value;
 	}
     if(!strcmp(topic, topic_mode.c_str())) {
-	    int value = String((char*)payload).toInt();
-	    addToLog(LOG_LEVEL_ERROR, "receive Temperature: %d", value);
+	    int value = String(buffer).toInt();
+	    addToLog(LOG_LEVEL_DEBUG, "receive Temperature: %d", value);
 		temperature_mode = value;
 	}
+
+    if(buffer) free(buffer);
 }
 
 static void reconnect() {
@@ -109,13 +126,9 @@ static void reconnect() {
 	      addToLog(LOG_LEVEL_ERROR, "Attempting MQTT connection...");
 	    // Attempt to connect
 	    if (client.connect("arduinoClient")) {
-	      addToLog(LOG_LEVEL_ERROR, "connected");
-	      // Once connected, publish an announcement...
-	      client.publish("outTopic","hello world");
-	      // ... and resubscribe
-	      client.subscribe("inTopic");
+	        addToLog(LOG_LEVEL_DEBUG, "mqtt: connected");
 	    } else {
-	      addToLog(LOG_LEVEL_ERROR, "failed, rc=%d try again in 5 seconds", client.state());
+	      addToLog(LOG_LEVEL_ERROR, "mqtt: failed, rc=%d try again in 5 seconds", client.state());
 	      // Wait 5 seconds before retrying
 	      delay(5000);
 	    }
