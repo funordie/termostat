@@ -20,10 +20,6 @@ void oled_setup() {
 	display.setFont(ArialMT_Plain_10);
 }
 
-void oled_loop() {
-    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
-}
-
 int oled_clear() {
     display.clear();
     //TODO: check for errors

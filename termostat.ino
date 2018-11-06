@@ -8,11 +8,16 @@
 #include <settings.hpp>
 #include <rtc.hpp>
 
+typedef enum {
+    TERMOSTAT_OK = 0,
+    TERMOSTAT_MQTT_ERROR,
+    TERMOSTAT_WIFI_ERROR
+}termostat_status_t;
+
 //#define _USE_EXTERNAL_TEMPERATURE_
 #define DB 0.5f
 static float temperature;
 static float temperature_setpoint;
-static int   termostat_status = -1;
 static int   termostat_mode;
 
 uint32_t uptime;
@@ -35,6 +40,7 @@ extern struct TIME_T {
 void TermostatRun() {
     int res;
     String status;
+    static int relay_status = 0;
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 
 #ifdef _USE_EXTERNAL_TEMPERATURE_
@@ -48,11 +54,6 @@ void TermostatRun() {
     }
 
     addToLog(LOG_LEVEL_DEBUG, "process temperature: %f", temperature);
-
-    res = mqtt_publish_temperature(temperature);
-    if(res) {
-        addToLog(LOG_LEVEL_ERROR, "sent temperature error !!!");
-    }
 
     res = mqtt_get_setpoint(&temperature_setpoint);
     if(res) {
@@ -71,28 +72,22 @@ void TermostatRun() {
     addToLog(LOG_LEVEL_DEBUG, "process mode: %d", termostat_mode);
 
     if(temperature + DB > temperature_setpoint) {
-        termostat_status = 0;
+        relay_status = 0;
     }
     else if(temperature - DB < temperature_setpoint) {
-        termostat_status = 1;
+        relay_status = 1;
     }
 
-    oled_clear();
-    res = oled_print(0, 0, String("Temperature: ") + String(temperature));
-    res = oled_print(0, 10, String("Temperature SP: ") + String(temperature_setpoint));
-    res = oled_print(0, 20, String("Mode: ") + String(termostat_mode));
-    res = oled_print(0, 30, String("Status: ") + String(termostat_status));
-    res = oled_print(0, 40, GetDateAndTime());
-    oled_display();
+    res = oled_print(0, 10, String("Temperature: ") + String(temperature));
+    res = oled_print(0, 20, String("Temperature SP: ") + String(temperature_setpoint));
+    res = oled_print(0, 30, String("Mode: ") + String(termostat_mode));
+    res = oled_print(0, 40, String("Relay: ") + String(relay_status));
 
     return;
 
 ERROR_1:
     addToLog(LOG_LEVEL_ERROR, "%s: error: %s", __FUNCTION__, status.c_str());
-    oled_clear();
-    res = oled_print(0, 0, status);
-    res = oled_print(0, 40, GetDateAndTime());
-    oled_display();
+    res = oled_print(0, 10, status);
 }
 
 //The setup function is called once at startup of the sketch
@@ -134,13 +129,12 @@ void setup() {
     oled_clear();
     oled_print(0, 0, "Setup DONE");
     oled_display();
-
-    //TODO: check all modules
-    termostat_status = 0;
 }
 
 void PerformEverySecond() {
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+
+    static termostat_status_t  termostat_status = TERMOSTAT_OK;
 
     static int tele_period = Settings.tele_period;                        // Tele period timer
     static int check_period = Settings.check_period;                       // Check period timer
@@ -149,33 +143,49 @@ void PerformEverySecond() {
 
     if (Settings.tele_period && (tele_period == Settings.tele_period)) {
         tele_period = 0;
-        temperature_loop();
+        float fTemp;
+
+        temperature_read();
+        temperature_get_temperature(&fTemp);
+        int res = mqtt_publish_temperature(fTemp);
+        if(res) {
+            addToLog(LOG_LEVEL_ERROR, "sent temperature error !!!");
+        }
     }
     tele_period++;
 
     if (Settings.check_period && (check_period == Settings.check_period)) {
+        termostat_status = TERMOSTAT_OK;
         check_period = 0;
-        wifi_check();
+        if(wifi_check()) {
+            termostat_status = TERMOSTAT_WIFI_ERROR;
+        }
+        if(mqtt_check()) {
+            termostat_status = TERMOSTAT_MQTT_ERROR;
+        }
     }
     check_period++;
 
+    oled_clear();
+    oled_print(0, 0, GetDateAndTime());
+
+    addToLog(LOG_LEVEL_DEBUG, "1s: termostat_status:%d", termostat_status);
     //check for termostat status
-    if(termostat_status == -1) {
-        //termostat is loading
-        static int load_count = 0;
-
-        String str = "loading: " + String(load_count) + String(" seconds");
-        oled_clear();
-        oled_print(0, 0, str);
-        oled_display();
-        addToLog(LOG_LEVEL_DEBUG, "%s", str.c_str());
-
-        load_count++;
-    }
-    else {
+    if(termostat_status == TERMOSTAT_OK) {
         //termostat is running
         TermostatRun();
     }
+    else if(termostat_status == TERMOSTAT_WIFI_ERROR) {
+        //WIFI error
+        oled_print(0, 10, "WIFI_ERROR");
+        //TODO: handle this error
+    }
+    else if(termostat_status == TERMOSTAT_MQTT_ERROR) {
+        //MQTT Error
+        oled_print(0, 10, "MQTT_ERROR");
+        //TODO: handle this error
+    }
+    oled_display();
 }
 
 /*********************************************************************************************\

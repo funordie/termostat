@@ -53,10 +53,20 @@ void wifi_setup() {
 	addToLog(LOG_LEVEL_ERROR, "WiFi connected: %s %s", WiFi.localIP().toString().c_str(), WiFi.SSID().c_str());
 }
 
-void wifi_check() {
+int wifi_check() {
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 
     if (WiFi.status() != WL_CONNECTED) {
         addToLog(LOG_LEVEL_ERROR, "WIFI is not connected");
+        WiFiManager wifiManager;
+        if(!wifiManager.autoConnect()) {
+            //WIFI is not connected
+            addToLog(LOG_LEVEL_ERROR, "WIFI reconnect failed !!!!!");
+            return -1;
+        }
+        else {
+            addToLog(LOG_LEVEL_ERROR, "WIFI reconnect OK");
+        }
     }
+    return 0;
 }

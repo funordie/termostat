@@ -35,7 +35,6 @@
 
 #include <common.hpp>
 
-static void reconnect();
 void callback(char* topic, byte* payload, unsigned int length);
 
 // Update these with values suitable for your network.
@@ -120,28 +119,27 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if(buffer) free(buffer);
 }
 
-static void reconnect() {
-	  // Loop until we're reconnected
-	  while (!client.connected()) {
-	      addToLog(LOG_LEVEL_ERROR, "Attempting MQTT connection...");
-	    // Attempt to connect
-	    if (client.connect("arduinoClient")) {
-	        addToLog(LOG_LEVEL_DEBUG, "mqtt: connected");
-	    } else {
-	      addToLog(LOG_LEVEL_ERROR, "mqtt: failed, rc=%d try again in 5 seconds", client.state());
-	      // Wait 5 seconds before retrying
-	      delay(5000);
-	    }
-	  }
-}
 void mqtt_loop() {
 
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
-	if (!client.connected()) {
-		reconnect();
-		mqtt_subscribe();
-	}
 	client.loop();
+}
+
+int mqtt_check() {
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+    if (!client.connected()) {
+        addToLog(LOG_LEVEL_ERROR, "MQTT is not connected");
+        String ssid = "ESP" + String(ESP.getChipId());
+        if (!client.connect(ssid.c_str())) {
+            //mqtt is not connected
+            addToLog(LOG_LEVEL_ERROR, "MQTT reconnect failed !!!!!");
+            return -1;
+        }
+        //mqtt is connected
+        addToLog(LOG_LEVEL_ERROR, "MQTT reconnect OK");
+        mqtt_subscribe();
+    }
+    return 0;
 }
 
 int mqtt_publish_temperature(float temperature) {

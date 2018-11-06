@@ -9,7 +9,6 @@
 #define OLED_OLED_HPP_
 
 void oled_setup();
-//void oled_loop();
 int oled_clear();
 int oled_print(int16_t xMove, int16_t yMove, String strUser);
 int oled_display();

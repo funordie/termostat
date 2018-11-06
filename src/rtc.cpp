@@ -38,5 +38,6 @@ void RtcInit()
     //   TimeZone: UTC
     //   Daylight saving: off
     NTP.begin (); // Only statement needed to start NTP sync.
-//    NTP.setTimeZone(Settings.TimeZone);
+    NTP.setTimeZone(Settings.TimeZone);
+    NTP.setDayLight(Settings.Daylight);
 }

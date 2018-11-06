@@ -11,7 +11,6 @@
 #include <Arduino.h>
 #include <Log.hpp>
 
-#include "oled.hpp"
 #include "gpio.hpp"
 
 enum LoggingLevels {
@@ -30,8 +29,8 @@ enum LoggingLevels {
 
 #define VERSION     1
 #define TELE_PERIOD 60          /*seconds*/
-#define TIMEZONE +3
-#define CHECK_PERIOD 60          /*seconds*/
+#define TIMEZONE +2
+#define CHECK_PERIOD 10          /*seconds*/
 /*********************************************************************************************\
  * SettingsStruct
 \*********************************************************************************************/
@@ -51,6 +50,7 @@ typedef struct SettingsStruct
         strlcpy(ntp_server[1], NTP_SERVER1, strlen(NTP_SERVER1));
         strlcpy(ntp_server[2], NTP_SERVER2, strlen(NTP_SERVER2));
         TimeZone = TIMEZONE;
+        Daylight = true;
         StructSize = sizeof(SettingsStruct);
         logLevel = LOG_LEVEL_DEBUG;
         check_period = CHECK_PERIOD;
@@ -60,6 +60,7 @@ typedef struct SettingsStruct
     uint16_t      tele_period;
     char          ntp_server[3][33];
     int32_t       TimeZone;
+    bool          Daylight;
     uint32_t      StructSize;  // Forced to be 32 bit, to make sure alignment is clear.
     int           logLevel;
     uint16_t      check_period;
