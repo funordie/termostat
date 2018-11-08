@@ -59,6 +59,22 @@ static void mqtt_subscribe() {
     addToLog(LOG_LEVEL_ERROR, "subscribe to: sp:%s mode:%s", topic_sp.c_str(), topic_mode.c_str());
 }
 
+static int mqtt_connect() {
+    if (!client.connected()) {
+        addToLog(LOG_LEVEL_ERROR, "MQTT is not connected");
+        String ssid = "ESP" + String(ESP.getChipId());
+        if (!client.connect(ssid.c_str())) {
+            //mqtt is not connected
+            addToLog(LOG_LEVEL_ERROR, "MQTT reconnect failed !!!!!");
+            return -1;
+        }
+        //mqtt is connected
+        addToLog(LOG_LEVEL_ERROR, "MQTT reconnect OK");
+        mqtt_subscribe();
+    }
+    return 0;
+}
+
 void mqtt_setup() {
 
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
@@ -74,15 +90,7 @@ void mqtt_setup() {
 	client.setServer(mqtt_server, mqtt_port);
 	client.setCallback(callback);
 
-	if (!client.connected()) {
-        if (client.connect("arduinoClient"))
-          addToLog(LOG_LEVEL_INFO, "mqtt: connected");
-	}
-    else {
-        addToLog(LOG_LEVEL_INFO, "mqtt: already connected");
-    }
-
-	mqtt_subscribe();
+	mqtt_connect();
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -126,19 +134,8 @@ void mqtt_loop() {
 
 int mqtt_check() {
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
-    if (!client.connected()) {
-        addToLog(LOG_LEVEL_ERROR, "MQTT is not connected");
-        String ssid = "ESP" + String(ESP.getChipId());
-        if (!client.connect(ssid.c_str())) {
-            //mqtt is not connected
-            addToLog(LOG_LEVEL_ERROR, "MQTT reconnect failed !!!!!");
-            return -1;
-        }
-        //mqtt is connected
-        addToLog(LOG_LEVEL_ERROR, "MQTT reconnect OK");
-        mqtt_subscribe();
-    }
-    return 0;
+
+    return mqtt_connect();
 }
 
 int mqtt_publish_temperature(float temperature) {
