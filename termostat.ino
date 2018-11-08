@@ -146,10 +146,19 @@ void PerformEverySecond() {
         float fTemp;
 
         temperature_read();
-        temperature_get_temperature(&fTemp);
-        int res = mqtt_publish_temperature(fTemp);
-        if(res) {
-            addToLog(LOG_LEVEL_ERROR, "sent temperature error !!!");
+        int res = temperature_get_temperature(&fTemp);
+        if(!res) {
+            addToLog(LOG_LEVEL_DEBUG_MORE, "temperature_get_temperature: %f", fTemp);
+            res = mqtt_publish_temperature(fTemp);
+            if(!res) {
+                addToLog(LOG_LEVEL_DEBUG_MORE, "mqtt_publish_temperature: %f", fTemp);
+            }
+            else {
+                addToLog(LOG_LEVEL_ERROR, "mqtt_publish_temperature error !!!");
+            }
+        }
+        else {
+            addToLog(LOG_LEVEL_ERROR, "temperature_get_temperature error !!!");
         }
     }
     tele_period++;

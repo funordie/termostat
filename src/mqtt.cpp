@@ -62,9 +62,8 @@ static void mqtt_subscribe() {
 void mqtt_setup() {
 
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
-	while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
-		delay(250);
-		addToLogEx(LOG_LEVEL_ERROR, '.');
+	if (WiFi.status() != WL_CONNECTED) {
+		addToLog(LOG_LEVEL_ERROR, "%s:WiFi.status() != WL_CONNECTED ", __FUNCTION__);
 	}
 
     topic_sp = String(ESP.getChipId()) + "/topic" + "/setpoint";
