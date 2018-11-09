@@ -119,7 +119,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 	}
     if(!strcmp(topic, topic_mode.c_str())) {
 	    int value = String(buffer).toInt();
-	    addToLog(LOG_LEVEL_DEBUG, "receive Temperature: %d", value);
+	    addToLog(LOG_LEVEL_DEBUG, "receive mode: %d", value);
 		temperature_mode = value;
 	}
 

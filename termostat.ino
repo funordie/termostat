@@ -14,6 +14,13 @@ typedef enum {
     TERMOSTAT_WIFI_ERROR
 }termostat_status_t;
 
+typedef enum {
+    TERMOSTAT_MODE_OFF = 0,
+    TERMOSTAT_MODE_ON,
+    TERMOSTAT_MODE_AUTO,
+    TERMOSTAT_MODE_MAX
+}termostat_mode_t;
+
 //#define _USE_EXTERNAL_TEMPERATURE_
 #define DB 0.5f
 static float temperature;
@@ -23,6 +30,16 @@ static int   termostat_mode;
 uint32_t uptime;
 Settings_t Settings;
 
+const String mode_str[] = {
+        "Mode: OFF",
+        "Mode: ON",
+        "Mode: AUTO",
+};
+String mode_to_str(termostat_mode_t mode) {
+
+    if(mode >= TERMOSTAT_MODE_MAX) return "Mode: Error";
+    return mode_str[mode];
+}
 extern struct TIME_T {
   uint8_t       second;
   uint8_t       minute;
@@ -36,6 +53,9 @@ extern struct TIME_T {
   unsigned long days;
   unsigned long valid;
 } RtcTime;
+
+extern oled_display_status_t    dspl_status;
+extern String                          dspl_loading;
 
 void TermostatRun() {
     int res;
@@ -78,16 +98,16 @@ void TermostatRun() {
         relay_status = 1;
     }
 
-    res = oled_print(0, 10, String("Temperature: ") + String(temperature));
-    res = oled_print(0, 20, String("Temperature SP: ") + String(temperature_setpoint));
-    res = oled_print(0, 30, String("Mode: ") + String(termostat_mode));
-    res = oled_print(0, 40, String("Relay: ") + String(relay_status));
+    dspl_status.temp = temperature;
+    dspl_status.temp_sp = temperature_setpoint;
+    dspl_status.mode = mode_to_str((termostat_mode_t)termostat_mode);
+    dspl_status.relay = relay_status;
 
     return;
 
 ERROR_1:
     addToLog(LOG_LEVEL_ERROR, "%s: error: %s", __FUNCTION__, status.c_str());
-    res = oled_print(0, 10, status);
+    dspl_status.info = status;
 }
 
 //The setup function is called once at startup of the sketch
@@ -95,40 +115,36 @@ void setup() {
     Serial.begin(115200);
 
     oled_setup();
-
-    oled_clear();
-    oled_print(0, 0, "Setup WIFI");
-    oled_display();
+    oled_switchToFrame(0);
+    dspl_loading = "Setup WIFI";
+    oled_loop();
 
     wifi_setup();
 
-    oled_clear();
-    oled_print(0, 0, "Setup MQTT");
-    oled_display();
+    dspl_loading = "Setup MQTT";
+    oled_loop();
 
 	mqtt_setup();
 
-    oled_clear();
-    oled_print(0, 0, "Setup Temperature");
-    oled_display();
+    dspl_loading = "Setup Temperature";
+    oled_loop();
 
     tempetarure_setup();
 
-    oled_clear();
-    oled_print(0, 0, "Setup WEB");
-    oled_display();
+    dspl_loading = "Setup WEB";
+    oled_loop();
 
     web_setup();
 
-    oled_clear();
-    oled_print(0, 0, "Setup SETTINGS");
-    oled_display();
+    dspl_loading = "Setup SETTINGS";
+    oled_loop();
 
     settings_setup();
 
-    oled_clear();
-    oled_print(0, 0, "Setup DONE");
-    oled_display();
+    dspl_loading = "Setup DONE";
+    oled_loop();
+
+    oled_switchToFrame(1);
 }
 
 void PerformEverySecond() {
@@ -175,26 +191,23 @@ void PerformEverySecond() {
     }
     check_period++;
 
-    oled_clear();
-    oled_print(0, 0, GetDateAndTime());
-
     addToLog(LOG_LEVEL_DEBUG, "1s: termostat_status:%d", termostat_status);
     //check for termostat status
     if(termostat_status == TERMOSTAT_OK) {
         //termostat is running
         TermostatRun();
+        dspl_status.info = "Status: Running";
     }
     else if(termostat_status == TERMOSTAT_WIFI_ERROR) {
         //WIFI error
-        oled_print(0, 10, "WIFI_ERROR");
+        dspl_status.info = "Status: WIFI_ERROR";
         //TODO: handle this error
     }
     else if(termostat_status == TERMOSTAT_MQTT_ERROR) {
         //MQTT Error
-        oled_print(0, 10, "MQTT_ERROR");
+        dspl_status.info = "Status: MQTT_ERROR";
         //TODO: handle this error
     }
-    oled_display();
 }
 
 /*********************************************************************************************\
@@ -268,6 +281,7 @@ void loop() {
     mqtt_loop();
     web_loop();
     settings_loop();
+    oled_loop();
 
     addToLog(LOG_LEVEL_DEBUG_MORE, "");
     addToLog(LOG_LEVEL_DEBUG_MORE, "");

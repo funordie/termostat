@@ -27,7 +27,7 @@ extern Settings_t Settings;
 String GetDateAndTime()
 {
     String str = NTP.getTimeDateString ();
-    addToLog(LOG_LEVEL_DEBUG, str);
+//    addToLog(LOG_LEVEL_DEBUG, str);
   return str;
 }
 

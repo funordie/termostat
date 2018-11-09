@@ -8,9 +8,19 @@
 #ifndef OLED_OLED_HPP_
 #define OLED_OLED_HPP_
 
+#include "SSD1306Wire.h" // legacy include: `#include "SSD1306.h"`
+
 void oled_setup();
-int oled_clear();
-int oled_print(int16_t xMove, int16_t yMove, String strUser);
-int oled_display();
+void oled_loop();
+void oled_switchToFrame(uint8_t frame);
+
+typedef struct {
+    String date;
+    String mode;
+    float temp;
+    float temp_sp;
+    int relay;
+    String info;
+}oled_display_status_t;
 
 #endif /* OLED_OLED_HPP_ */

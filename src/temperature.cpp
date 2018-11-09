@@ -39,10 +39,6 @@ void temperature_read() {
 
 int temperature_get_temperature(float * fTemp) {
 
-    if(__status_error) {
-        //try to read temperature
-        temperature_read();
-    }
 	*fTemp = temperature;
 	return __status_error;
 }
