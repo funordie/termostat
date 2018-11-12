@@ -72,6 +72,8 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/NtpClientLib/src}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Time}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/arduino-menusystem}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -116,6 +118,8 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/NtpClientLib/src}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Time}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/arduino-menusystem}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -160,6 +164,8 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/NtpClientLib/src}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/Time}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/termostat/libraries/arduino-menusystem}&quot;"/>
                                     								
                                 </option>
                                 								
