@@ -7,19 +7,13 @@
 #include <webserver.hpp>
 #include <settings.hpp>
 #include <rtc.hpp>
+#include <termostat.hpp>
 
 typedef enum {
     TERMOSTAT_OK = 0,
     TERMOSTAT_MQTT_ERROR,
     TERMOSTAT_WIFI_ERROR
 }termostat_status_t;
-
-typedef enum {
-    TERMOSTAT_MODE_OFF = 0,
-    TERMOSTAT_MODE_ON,
-    TERMOSTAT_MODE_AUTO,
-    TERMOSTAT_MODE_MAX
-}termostat_mode_t;
 
 //#define _USE_EXTERNAL_TEMPERATURE_
 #define DB 0.5f
