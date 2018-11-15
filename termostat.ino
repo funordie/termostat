@@ -174,6 +174,7 @@ void PerformEverySecond() {
     tele_period++;
 
     if (Settings.check_period && (check_period == Settings.check_period)) {
+        addToLog(LOG_LEVEL_ERROR, "%s: check_period:%d", __FUNCTION__, check_period);
         termostat_status = TERMOSTAT_OK;
         check_period = 0;
         if(wifi_check()) {

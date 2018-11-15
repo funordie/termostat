@@ -105,9 +105,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
         return;
     }
     strncpy(buffer, (char*)payload, length);
-    buffer[length + 1] = 0;
+    buffer[length] = 0;
 
- 	for (unsigned int i=0;i<length;i++) {
+ 	for (unsigned int i=0; i <= length; i++) {
 	    addToLogEx(LOG_LEVEL_DEBUG, "%c", (char)buffer[i]);
 	}
 	addToLog(LOG_LEVEL_DEBUG, "");
