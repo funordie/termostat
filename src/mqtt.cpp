@@ -35,7 +35,6 @@
 
 #include <common.hpp>
 
-static void reconnect();
 void callback(char* topic, byte* payload, unsigned int length);
 
 // Update these with values suitable for your network.
@@ -60,12 +59,27 @@ static void mqtt_subscribe() {
     addToLog(LOG_LEVEL_ERROR, "subscribe to: sp:%s mode:%s", topic_sp.c_str(), topic_mode.c_str());
 }
 
+static int mqtt_connect() {
+    if (!client.connected()) {
+        addToLog(LOG_LEVEL_ERROR, "MQTT is not connected");
+        String ssid = "ESP" + String(ESP.getChipId());
+        if (!client.connect(ssid.c_str())) {
+            //mqtt is not connected
+            addToLog(LOG_LEVEL_ERROR, "MQTT reconnect failed !!!!!");
+            return -1;
+        }
+        //mqtt is connected
+        addToLog(LOG_LEVEL_ERROR, "MQTT reconnect OK");
+        mqtt_subscribe();
+    }
+    return 0;
+}
+
 void mqtt_setup() {
 
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
-	while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
-		delay(250);
-		addToLogEx(LOG_LEVEL_ERROR, '.');
+	if (WiFi.status() != WL_CONNECTED) {
+		addToLog(LOG_LEVEL_ERROR, "%s:WiFi.status() != WL_CONNECTED ", __FUNCTION__);
 	}
 
     topic_sp = String(ESP.getChipId()) + "/topic" + "/setpoint";
@@ -76,15 +90,7 @@ void mqtt_setup() {
 	client.setServer(mqtt_server, mqtt_port);
 	client.setCallback(callback);
 
-	if (!client.connected()) {
-        if (client.connect("arduinoClient"))
-          addToLog(LOG_LEVEL_INFO, "mqtt: connected");
-	}
-    else {
-        addToLog(LOG_LEVEL_INFO, "mqtt: already connected");
-    }
-
-	mqtt_subscribe();
+	mqtt_connect();
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -99,9 +105,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
         return;
     }
     strncpy(buffer, (char*)payload, length);
-    buffer[length + 1] = 0;
+    buffer[length] = 0;
 
- 	for (unsigned int i=0;i<length;i++) {
+ 	for (unsigned int i=0; i <= length; i++) {
 	    addToLogEx(LOG_LEVEL_DEBUG, "%c", (char)buffer[i]);
 	}
 	addToLog(LOG_LEVEL_DEBUG, "");
@@ -113,35 +119,23 @@ void callback(char* topic, byte* payload, unsigned int length) {
 	}
     if(!strcmp(topic, topic_mode.c_str())) {
 	    int value = String(buffer).toInt();
-	    addToLog(LOG_LEVEL_DEBUG, "receive Temperature: %d", value);
+	    addToLog(LOG_LEVEL_DEBUG, "receive mode: %d", value);
 		temperature_mode = value;
 	}
 
     if(buffer) free(buffer);
 }
 
-static void reconnect() {
-	  // Loop until we're reconnected
-	  while (!client.connected()) {
-	      addToLog(LOG_LEVEL_ERROR, "Attempting MQTT connection...");
-	    // Attempt to connect
-	    if (client.connect("arduinoClient")) {
-	        addToLog(LOG_LEVEL_DEBUG, "mqtt: connected");
-	    } else {
-	      addToLog(LOG_LEVEL_ERROR, "mqtt: failed, rc=%d try again in 5 seconds", client.state());
-	      // Wait 5 seconds before retrying
-	      delay(5000);
-	    }
-	  }
-}
 void mqtt_loop() {
 
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
-	if (!client.connected()) {
-		reconnect();
-		mqtt_subscribe();
-	}
 	client.loop();
+}
+
+int mqtt_check() {
+    addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
+
+    return mqtt_connect();
 }
 
 int mqtt_publish_temperature(float temperature) {

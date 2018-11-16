@@ -24,7 +24,7 @@ void tempetarure_setup() {
 	sensors.begin();
 }
 
-void temperature_loop() {
+void temperature_read() {
 
 	// call sensors.requestTemperatures() to issue a global temperature
 	// request to all devices on the bus
@@ -39,10 +39,6 @@ void temperature_loop() {
 
 int temperature_get_temperature(float * fTemp) {
 
-    if(__status_error) {
-        //try to read temperature
-        temperature_loop();
-    }
 	*fTemp = temperature;
 	return __status_error;
 }

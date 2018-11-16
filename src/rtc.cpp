@@ -27,7 +27,7 @@ extern Settings_t Settings;
 String GetDateAndTime()
 {
     String str = NTP.getTimeDateString ();
-    addToLog(LOG_LEVEL_DEBUG, str);
+//    addToLog(LOG_LEVEL_DEBUG, str);
   return str;
 }
 
@@ -38,5 +38,6 @@ void RtcInit()
     //   TimeZone: UTC
     //   Daylight saving: off
     NTP.begin (); // Only statement needed to start NTP sync.
-//    NTP.setTimeZone(Settings.TimeZone);
+    NTP.setTimeZone(Settings.TimeZone);
+    NTP.setDayLight(Settings.Daylight);
 }

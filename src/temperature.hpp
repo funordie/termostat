@@ -9,7 +9,7 @@
 #define TEMP_TEMPERATURE_HPP_
 
 void tempetarure_setup();
-void temperature_loop();
+void temperature_read();
 int temperature_get_temperature(float * fTemp);
 
 
