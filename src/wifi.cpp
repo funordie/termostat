@@ -29,11 +29,11 @@ void wifi_setup() {
     addToLog(LOG_LEVEL_DEBUG_MORE, "%s: enter", __FUNCTION__);
 	pinMode(TRIGGER_PIN, INPUT);
 
-	//WiFiManager
-	//Local intialization. Once its business is done, there is no need to keep it around
-	WiFiManager wifiManager;
-
 	if ( digitalRead(TRIGGER_PIN) == LOW ) {
+
+	    //WiFiManager
+	    //Local intialization. Once its business is done, there is no need to keep it around
+	    WiFiManager wifiManager;
 
 		//reset settings - for testing
 		//wifiManager.resetSettings();
