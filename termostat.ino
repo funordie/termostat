@@ -18,6 +18,7 @@ typedef enum {
 //#define _USE_EXTERNAL_TEMPERATURE_
 #define DB 0.5f
 static float temperature;
+static float temperature_out;
 static float temperature_setpoint;
 static int   termostat_mode;
 
@@ -77,6 +78,14 @@ void TermostatRun() {
 
     addToLog(LOG_LEVEL_DEBUG, "process setpoint: %f", temperature_setpoint);
 
+    res = mqtt_get_temperature_out(&temperature_out);
+    if(res) {
+        status = "get output temp error !!!";
+        goto ERROR_1;
+    }
+
+    addToLog(LOG_LEVEL_DEBUG, "output temp: %d", temperature_out);
+
     res = mqtt_get_mode(&termostat_mode);
     if(res) {
         status = "get mode error !!!";
@@ -92,6 +101,7 @@ void TermostatRun() {
         relay_status = 1;
     }
 
+    dspl_status.temp_out = temperature_out;
     dspl_status.temp = temperature;
     dspl_status.temp_sp = temperature_setpoint;
     dspl_status.mode = mode_to_str((termostat_mode_t)termostat_mode);

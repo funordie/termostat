@@ -18,6 +18,7 @@ typedef struct {
     String date;
     String mode;
     float temp;
+    float temp_out;
     float temp_sp;
     int relay;
     String info;

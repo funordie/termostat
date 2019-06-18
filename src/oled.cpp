@@ -70,7 +70,8 @@ void drawFrameStatus(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x,
     display->setFont(ArialMT_Plain_10);
 
     //OVERLAY ROW
-    display->drawString(0, 10, String("Temp: ") + String(dspl_status.temp));
+    display->drawString(0, 10, String("In: ") + String(dspl_status.temp));
+    display->drawString(50, 10, String("Out: ") + String(dspl_status.temp_out));
     display->drawString(0, 20, String("Temp SP: ") + String(dspl_status.temp_sp));
     display->drawString(0, 30, String("Mode: ") + String(dspl_status.mode));
     display->drawString(0, 40, String("Relay: ") + String(dspl_status.relay));

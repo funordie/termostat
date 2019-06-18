@@ -44,19 +44,25 @@ static const uint16_t mqtt_port = 1883;
 static float temperature_setpoint;
 static float temperature_external;
 static int temperature_mode;
+static float temperature_out;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 String topic_sp;
 String topic_temp;
+String topic_temp_out;
 String topic_mode;
 
 static void mqtt_subscribe() {
     client.subscribe(topic_sp.c_str());
     client.subscribe(topic_mode.c_str());
+    client.subscribe(topic_temp_out.c_str());
 
-    addToLog(LOG_LEVEL_ERROR, "subscribe to: sp:%s mode:%s", topic_sp.c_str(), topic_mode.c_str());
+    addToLog(LOG_LEVEL_ERROR, "subscribe to: sp:%s mode:%s temp_out:%s",
+            topic_sp.c_str(),
+            topic_mode.c_str(),
+            topic_temp_out.c_str());
 }
 
 static int mqtt_connect() {
@@ -85,6 +91,7 @@ void mqtt_setup() {
     topic_sp = String(ESP.getChipId()) + "/topic" + "/setpoint";
     topic_mode = String(ESP.getChipId()) + "/topic" + "/mode";
     topic_temp = String(ESP.getChipId()) + "/topic" + "/temperature";
+    topic_temp_out = String(ESP.getChipId()) + "/topic" + "/temperature_out";
 
 	delay(5000);
 	client.setServer(mqtt_server, mqtt_port);
@@ -117,11 +124,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
 	    addToLog(LOG_LEVEL_DEBUG, "receive Temperature Set point float: %f", value);
 		temperature_setpoint = value;
 	}
-    if(!strcmp(topic, topic_mode.c_str())) {
+	else if(!strcmp(topic, topic_mode.c_str())) {
 	    int value = String(buffer).toInt();
 	    addToLog(LOG_LEVEL_DEBUG, "receive mode: %d", value);
 		temperature_mode = value;
 	}
+	else if(!strcmp(topic, topic_temp_out.c_str())) {
+        float value = String(buffer).toFloat();
+        addToLog(LOG_LEVEL_DEBUG, "receive out temp: %f", value);
+        temperature_out = value;
+    }
 
     if(buffer) free(buffer);
 }
@@ -160,6 +172,14 @@ int mqtt_get_temperature(float * value) {
 
 	//TODO: check for error
 	return 0;
+}
+
+int mqtt_get_temperature_out(float * value) {
+
+    *value = temperature_out;
+
+    //TODO: check for error
+    return 0;
 }
 
 int mqtt_get_mode(int * value) {
