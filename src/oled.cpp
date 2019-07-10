@@ -11,6 +11,8 @@
 #include "oled.hpp"
 #include "rtc.hpp"
 
+#include "oled_fonts.hpp"
+
 const uint8_t activeSymbol[] PROGMEM = {
     B00000000,
     B00000000,
@@ -59,7 +61,7 @@ void drawFrameLoading(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x
 //    addToLog(LOG_LEVEL_ERROR, "%s: enter", __FUNCTION__);
 
     display->setTextAlignment(TEXT_ALIGN_LEFT);
-    display->setFont(ArialMT_Plain_16);
+    display->setFont(Dialog_plain_12);
     display->drawString(20, 20, dspl_loading);
 }
 
@@ -67,15 +69,16 @@ void drawFrameStatus(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x,
 //    addToLog(LOG_LEVEL_ERROR, "%s: enter", __FUNCTION__);
 
     display->setTextAlignment(TEXT_ALIGN_LEFT);
-    display->setFont(ArialMT_Plain_10);
+    display->setFont(Dialog_plain_12);
 
+#define SIZE 16
     //OVERLAY ROW
-    display->drawString(0, 10, String("In: ") + String(dspl_status.temp));
-    display->drawString(50, 10, String("Out: ") + String(dspl_status.temp_out));
-    display->drawString(0, 20, String("Temp SP: ") + String(dspl_status.temp_sp));
-    display->drawString(0, 30, String("Mode: ") + String(dspl_status.mode));
-    display->drawString(0, 40, String("Relay: ") + String(dspl_status.relay));
-    display->drawString(0, 50, dspl_status.info);
+    display->drawString(0, SIZE, String("In:") + String(dspl_status.temp, 1));
+    display->drawString(50, SIZE, String("Out:") + String(dspl_status.temp_out, 1));
+    display->drawString(0, SIZE * 2, String("SP:") + String(dspl_status.temp_sp, 1));
+    display->drawString(50,SIZE * 2, String("Mode:") + String(dspl_status.mode));
+    display->drawString(0, SIZE * 3, String("Rel: ") + String(dspl_status.relay));
+    display->drawString(40, SIZE * 3, dspl_status.info);
 }
 
 // This array keeps function pointers to all frames

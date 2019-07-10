@@ -201,16 +201,16 @@ void PerformEverySecond() {
     if(termostat_status == TERMOSTAT_OK) {
         //termostat is running
         TermostatRun();
-        dspl_status.info = "Status: Running";
+        dspl_status.info = "Status:Run";
     }
     else if(termostat_status == TERMOSTAT_WIFI_ERROR) {
         //WIFI error
-        dspl_status.info = "Status: WIFI_ERROR";
+        dspl_status.info = "Status:ERR WIFI";
         //TODO: handle this error
     }
     else if(termostat_status == TERMOSTAT_MQTT_ERROR) {
         //MQTT Error
-        dspl_status.info = "Status: MQTT_ERROR";
+        dspl_status.info = "Status:ERR MQTT";
         //TODO: handle this error
     }
 }
